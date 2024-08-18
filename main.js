@@ -4,9 +4,12 @@ let ctx;
 let vehicleArr = [];
 let pathArr = [];
 const colourArray = ['blue', 'pink', 'orange', 'yellow', 'purple', 'green'];
+var fps = 5;
 
 //Max number of vehicles to be included in a simulation
-let totalVehicles = 30;
+let totalIterations = 50;
+//Number of points to be created in the path
+const numPoints = 25;
 
 function init() {
     ctx = document.getElementById("canvas").getContext("2d");
@@ -16,49 +19,45 @@ function init() {
     //
 
     // Initialise path coordinates
-    const start = [100, 1000]; // Starting point
+    const start = [100, 800]; // Starting point
     const interim1 = [100, 600]; // First control point
     const interim2 = [100, 300]; // Second control point
     const end = [100, 0]; // Ending point
 
-    const numPoints = 50;
-
     //Create path with the assigned coordinates
     pathArr = createPath(start, interim1, interim2, end, numPoints);
-    window.requestAnimationFrame(startSimulation);
-    //window.requestAnimationFrame(startSimulation);
-    //window.requestAnimationFrame(startSimulation);
-    //window.requestAnimationFrame(startSimulation);
-    //window.requestAnimationFrame(startSimulation);
-    //window.requestAnimationFrame(startSimulation);
-    //window.requestAnimationFrame(startSimulation);
-    //window.requestAnimationFrame(startSimulation);
 
+    startSimulation();
 }
 
 function startSimulation() {
+    if(totalIterations-- < 0)
+        return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     createRoad();
     updatePathPointVehicles();
-    window.requestAnimationFrame(startSimulation);
+    
+    setTimeout(() => {
+        window.requestAnimationFrame(startSimulation);
+      }, 1000 / fps);
+    
 }
 
 function updatePathPointVehicles() {
-    if (totalVehicles-- <= 0)
-        return;
     for (var i = pathArr.length - 1; i >= 0; i--) {
-        console.log(pathArr[i].position + " : " + i)
+        //console.log(pathArr[i].position + " : " + i)
         if (pathArr[i].vehicle == null) {
             //If start point is null, add a vehicle to the path 
-            if (pathArr[i].position == "start" ) {
+            if (pathArr[i].position == "start") {
                 addNewVehicleToPath(i);
             }
         } else {
-            console.log(pathArr[i].position);
             if ((pathArr[i].position == "start") || (pathArr[i].position == "interim")) {
-                console.log("Is move up : " + moveUpIfPossible(i));
+                var isMoveUp = moveUpIfPossible(i);
+                //console.log("Is move up : " + isMoveUp);
             } else if (pathArr[i].position == "end") {
-                console.log("end - " + pathArr[i].vehicle.y);
+                console.log("Remove vehicle from end");
+                pathArr[i].vehicle = null;
             }
         }
     }
@@ -98,9 +97,6 @@ function createRoad() {
     ctx.strokeRect(80, 0, 50, 800);
 }
 
-function initVehiclesOnRoad() {
-    // roadSlotArr[0] = createVehicles();
-}
 
 //Create vehicles required in simulation
 function createVehicles() {
