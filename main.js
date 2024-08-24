@@ -1,5 +1,7 @@
 import createVehicle from "./src/vehicle.js";
 import createPath from "./src/path.js";
+import moveUpIfPossible from "./src/utils/movement.js";
+
 let ctx;
 let vehicleArr = [];
 let pathArr = [];
@@ -13,11 +15,6 @@ const numPoints = 25;
 
 function init() {
     ctx = document.getElementById("canvas").getContext("2d");
-    //Works
-    // createVehicles();
-    // window.requestAnimationFrame(updateVehiclePositions);
-    //
-
     // Initialise path coordinates
     const start = [100, 800]; // Starting point
     const interim1 = [100, 600]; // First control point
@@ -53,10 +50,10 @@ function updatePathPointVehicles() {
             }
         } else {
             if ((pathArr[i].position == "start") || (pathArr[i].position == "interim")) {
-                var isMoveUp = moveUpIfPossible(i);
+                var isMoveUp = moveUpIfPossible(i, pathArr);
                 //console.log("Is move up : " + isMoveUp);
             } else if (pathArr[i].position == "end") {
-                console.log("Remove vehicle from end");
+                //console.log("Remove vehicle from end");
                 pathArr[i].vehicle = null;
             }
         }
@@ -70,24 +67,6 @@ function addNewVehicleToPath(pIdx) {
 
 }
 
-//Move vehicle along a path if the next point is free
-function moveUpIfPossible(pIdx) {
-    var isMoved = false;
-    if (pIdx >= 0 && pIdx < pathArr.length) {
-        if (pathArr[pIdx + 1].vehicle == null) {
-            pathArr[pIdx + 1].vehicle = pathArr[pIdx].vehicle;
-
-            pathArr[pIdx + 1].vehicle.x = pathArr[pIdx + 1].x;
-            pathArr[pIdx + 1].vehicle.y = pathArr[pIdx + 1].y;
-            pathArr[pIdx + 1].vehicle.draw();
-
-            pathArr[pIdx].vehicle = null;
-            isMoved = true;
-        }
-    }
-    return isMoved;
-}
-
 //Create road with desired properties
 function createRoad() {
     ctx.fillStyle = "black";
@@ -96,7 +75,6 @@ function createRoad() {
     ctx.fillRect(80, 0, 100, 800);
     ctx.strokeRect(80, 0, 50, 800);
 }
-
 
 //Create vehicles required in simulation
 function createVehicles() {
@@ -111,45 +89,6 @@ function createVehicles() {
         vehicleArr[i] = createVehicle(ctx, x, y, colourArray[cIdx]);
     }
     return vehicleArr;
-}
-
-function updateVehiclesOnRoad() {
-    for (var i = 0; i < roadSlotArr.length; i++) {
-        var localVehicleArr = roadSlotArr[i];
-        for (var index = 0; index < localVehicleArr.length; index++) {
-            var localVehicle = localVehicleArr[index];
-            if (localVehicle != null) {
-                if (localVehicle.y > 0) {
-                    localVehicle.x += localVehicle.vx;
-                    localVehicle.y += localVehicle.vy;
-                    localVehicle.draw();
-
-                    //Remove vehicle from current postion in road array and move it forward
-                    roadSlotArr[i][index] = null;
-                    roadSlotArr[i][index + 1] = localVehicle;
-                } else {
-                    //Vehicle reached its destination. Remove it from road array
-                    roadSlotArr[i][index] = null;
-                }
-            }
-        }
-    }
-    window.requestAnimationFrame(updateVehiclesOnRoad);
-}
-
-//Update positions of the vehicles on the path
-function updateVehiclePositions() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    createRoad();
-
-    for (var index = 0; index < vehicleArr.length; index++) {
-        if (vehicleArr[index].y > 0) {
-            vehicleArr[index].x += vehicleArr[index].vx;
-            vehicleArr[index].y += vehicleArr[index].vy;
-            vehicleArr[index].draw();
-        }
-    };
-    window.requestAnimationFrame(updateVehiclePositions);
 }
 
 //Start simulation with the init function
