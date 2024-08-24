@@ -1,5 +1,5 @@
 //Move vehicle along a path if the next point is free
-export default function moveUpIfPossible(pIdx, pathArr) {
+export function moveUpIfPossible(pIdx, pathArr) {
     var isMoved = false;
     if (pIdx >= 0 && pIdx < pathArr.length) {
         if (pathArr[pIdx + 1].vehicle == null) {

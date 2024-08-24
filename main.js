@@ -1,12 +1,11 @@
-import createVehicle from "./src/vehicle.js";
-import createPath from "./src/path.js";
-import moveUpIfPossible from "./src/utils/movement.js";
+import { createPath, addNewVehicleToPath } from "./src/path.js";
+import { updatePathPointVehicles } from "./src/orchestrator.js";
 
 let ctx;
-let vehicleArr = [];
-let pathArr = [];
-const colourArray = ['blue', 'pink', 'orange', 'yellow', 'purple', 'green'];
-var fps = 5;
+let laneArr = [];
+//let pathArr = [];
+const fps = 5;
+const laneCount = 3;
 
 //Max number of vehicles to be included in a simulation
 let totalIterations = 50;
@@ -16,54 +15,43 @@ const numPoints = 25;
 function init() {
     ctx = document.getElementById("canvas").getContext("2d");
     // Initialise path coordinates
-    const start = [100, 800]; // Starting point
-    const interim1 = [100, 600]; // First control point
-    const interim2 = [100, 300]; // Second control point
-    const end = [100, 0]; // Ending point
+    let start = [105, 800]; // Starting point
+    let interim1 = [105, 600]; // First control point
+    let interim2 = [105, 300]; // Second control point
+    let end = [105, 0]; // Ending point
 
-    //Create path with the assigned coordinates
-    pathArr = createPath(start, interim1, interim2, end, numPoints);
+    for (var i = 0; i < laneCount; i++) {
+        //Create lane specific path that the vehicles should follow
+        laneArr[i] = createPath(start, interim1, interim2, end, numPoints);
 
+        //Values for the next iterations
+        start[0] = start[0] + 50;
+        interim1[0] = interim1[0] + 50;
+        interim2[0] = interim2[0] + 50;
+        end[0] = end[0] + 50;
+
+    }
     startSimulation();
 }
 
 function startSimulation() {
-    if(totalIterations-- < 0)
+    //Limit the total number of iterations or time of the simulation
+    if (totalIterations-- < 0)
         return;
+
+    //Clear the canvas and repaint it for each frame refresh
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     createRoad();
-    updatePathPointVehicles();
-    
+
+    //Update the recreated canvas with change in vehicle positions
+    laneArr.forEach(function (path) {
+        updatePathPointVehicles(path, ctx);
+    });
+
+    //Control the frame refresh period
     setTimeout(() => {
         window.requestAnimationFrame(startSimulation);
-      }, 1000 / fps);
-    
-}
-
-function updatePathPointVehicles() {
-    for (var i = pathArr.length - 1; i >= 0; i--) {
-        //console.log(pathArr[i].position + " : " + i)
-        if (pathArr[i].vehicle == null) {
-            //If start point is null, add a vehicle to the path 
-            if (pathArr[i].position == "start") {
-                addNewVehicleToPath(i);
-            }
-        } else {
-            if ((pathArr[i].position == "start") || (pathArr[i].position == "interim")) {
-                var isMoveUp = moveUpIfPossible(i, pathArr);
-                //console.log("Is move up : " + isMoveUp);
-            } else if (pathArr[i].position == "end") {
-                //console.log("Remove vehicle from end");
-                pathArr[i].vehicle = null;
-            }
-        }
-    }
-}
-
-function addNewVehicleToPath(pIdx) {
-    const cIdx = Math.floor(Math.random() * colourArray.length);
-    pathArr[pIdx].vehicle = createVehicle(ctx, pathArr[pIdx].x, pathArr[pIdx].y, colourArray[cIdx]);
-    pathArr[pIdx].vehicle.draw();
+    }, 1000 / fps);
 
 }
 
@@ -72,23 +60,9 @@ function createRoad() {
     ctx.fillStyle = "black";
     ctx.strokeStyle = "white";
     ctx.setLineDash([10, 15]);
-    ctx.fillRect(80, 0, 100, 800);
+    ctx.fillRect(80, 0, 150, 800);
     ctx.strokeRect(80, 0, 50, 800);
-}
-
-//Create vehicles required in simulation
-function createVehicles() {
-    let x, y;
-    for (var i = 0; i < 2; i++) {
-        //Create new vehicle at a different horizontal position
-        x = 100 + i * 60;
-        y = 800;
-        //Pick a random color
-        const cIdx = Math.floor(Math.random() * colourArray.length);
-
-        vehicleArr[i] = createVehicle(ctx, x, y, colourArray[cIdx]);
-    }
-    return vehicleArr;
+    ctx.strokeRect(80, 0, 100, 800);
 }
 
 //Start simulation with the init function

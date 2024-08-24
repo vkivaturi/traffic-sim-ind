@@ -1,5 +1,9 @@
+import createVehicle from "./vehicle.js";
+
+const colourArray = ['blue', 'pink', 'orange', 'yellow', 'purple', 'green'];
+
 //Create a path using Beizer curve computation
-export default function createPath(p0, p1, p2, p3, numPoints) {
+export function createPath(p0, p1, p2, p3, numPoints) {
     var pathArr = [];
     for (let i = 0; i <= numPoints; i++) {
         const t = i / numPoints;
@@ -16,6 +20,15 @@ export default function createPath(p0, p1, p2, p3, numPoints) {
         //console.log(`t=${t.toFixed(1)}: x=${pathArr[i].x.toFixed(0)}, y=${pathArr[i].y.toFixed(0)}`);
     }
     return pathArr;
+}
+
+//Add a new vehicle to the path provided. This is usually done at the beginning of the path
+export function addNewVehicleToPath(pIdx, pathArr, ctx) {
+    const cIdx = Math.floor(Math.random() * colourArray.length);
+    pathArr[pIdx].vehicle = createVehicle(ctx, pathArr[pIdx].x, pathArr[pIdx].y, colourArray[cIdx]);
+    pathArr[pIdx].vehicle.draw();
+    return pathArr[pIdx];
+
 }
 
 // Compute the cubic Bézier coordinates for a given t value
@@ -36,11 +49,3 @@ function cubicBezier(t, p0, p1, p2, p3) {
 
     return point;
 }
-
-// Example usage
-// const start = [40, 120]; // Starting point
-// const interim1 = [30, 130]; // First control point
-// const interim2 = [30, 140]; // Second control point
-// const end = [40, 150]; // Ending point
-
-// createPath(start, interim1, interim2, end, 10);
