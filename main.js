@@ -6,14 +6,20 @@ let laneArr = [];
 //let pathArr = [];
 const fps = 5;
 const laneCount = 3;
+var vehicleElement;
+var vehicleCount = 0;
 
-//Max number of vehicles to be included in a simulation
+//Max number of simulation iterations
 let totalIterations = 50;
 //Number of points to be created in the path
 const numPoints = 25;
 
 function init() {
     ctx = document.getElementById("canvas").getContext("2d");
+
+    // vehicleElement = document.getElementById("counter");
+    // vehicleElement.textContent = vehicleCount;
+
     // Initialise path coordinates
     let start = [105, 800]; // Starting point
     let interim1 = [105, 600]; // First control point

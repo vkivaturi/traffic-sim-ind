@@ -1,8 +1,41 @@
 <html>
-    <head>
-        <script src="main.js" type="module"></script>
-    </head>
-    <body>
-        <canvas id="canvas" width="800" height="600"></canvas>
-    </body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Traffic simulator</title>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: 2fr 2fr;
+            /* Two columns: one-third and two-thirds width */
+            gap: 20px;
+            /* Space between columns */
+        }
+
+        .grid-item {
+            padding: 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+        }
+    </style>
+
+    <script src="main.js" type="module"></script>
+</head>
+
+<body>
+    <div class="grid-container">
+        <div class="grid-item" id="col1">
+            <canvas id="canvas" width="800" height="600"></canvas>
+        </div>
+        <div class="grid-item" id="col2">Column 2</div>
+        <div class="grid-item" id="col3">
+            Vehicle count
+            <span id="counter" class="counter">0</span>
+        </div>
+        <div class="grid-item" id="col4">Column 4</div>
+    </div>
+</body>
+
 </html>

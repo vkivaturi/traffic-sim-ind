@@ -17,6 +17,9 @@ export function updatePathPointVehicles(pathArr, ctx) {
             } else if (pathArr[i].position == "end") {
                 //Remove vehicle from end
                 pathArr[i].vehicle = null;
+
+                let vehicleElement = document.getElementById("counter");
+                vehicleElement.textContent++;          
             }
         }
     }
