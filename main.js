@@ -3,38 +3,31 @@ import { updatePathPointVehicles } from "./src/orchestrator.js";
 
 let ctx;
 let laneArr = [];
-//let pathArr = [];
-const fps = 5;
-const laneCount = 3;
-var vehicleElement;
-var vehicleCount = 0;
+const fps = 4;
+const laneCount = 1;
 
 //Max number of simulation iterations
-let totalIterations = 50;
+let totalIterations = 300;
 //Number of points to be created in the path
-const numPoints = 25;
+const numPoints = 30;
 
 function init() {
     ctx = document.getElementById("canvas").getContext("2d");
 
-    // vehicleElement = document.getElementById("counter");
-    // vehicleElement.textContent = vehicleCount;
-
-    // Initialise path coordinates
-    let start = [105, 800]; // Starting point
-    let interim1 = [105, 600]; // First control point
-    let interim2 = [105, 300]; // Second control point
-    let end = [105, 0]; // Ending point
+    let y = 25;
+    let start = [0, y]; // Starting point
+    let interim1 = [300, y]; // First control point
+    let interim2 = [600, y]; // Second control point
+    let end = [canvas.width, y]; // Ending point
 
     for (var i = 0; i < laneCount; i++) {
         //Create lane specific path that the vehicles should follow
         laneArr[i] = createPath(start, interim1, interim2, end, numPoints);
 
-        //Values for the next iterations
-        start[0] = start[0] + 50;
-        interim1[0] = interim1[0] + 50;
-        interim2[0] = interim2[0] + 50;
-        end[0] = end[0] + 50;
+        start[1] = start[1] + 50;
+        interim1[1] = interim1[1] + 50;
+        interim2[1] = interim2[1] + 50;
+        end[1] = end[1] + 50;
 
     }
     startSimulation();
@@ -66,9 +59,10 @@ function createRoad() {
     ctx.fillStyle = "black";
     ctx.strokeStyle = "white";
     ctx.setLineDash([10, 15]);
-    ctx.fillRect(80, 0, 150, 800);
-    ctx.strokeRect(80, 0, 50, 800);
-    ctx.strokeRect(80, 0, 100, 800);
+
+    ctx.fillRect(0, 0, canvas.width, 150);
+    ctx.strokeRect(0, 50, canvas.width, canvas.width);
+    ctx.strokeRect(0, 100, canvas.width, canvas.width);
 }
 
 //Start simulation with the init function

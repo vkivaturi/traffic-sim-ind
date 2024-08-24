@@ -8,7 +8,7 @@
     <style>
         .grid-container {
             display: grid;
-            grid-template-columns: 2fr 2fr;
+            grid-template-rows: 1fr 1fr;
             /* Two columns: one-third and two-thirds width */
             gap: 20px;
             /* Space between columns */
@@ -27,14 +27,12 @@
 <body>
     <div class="grid-container">
         <div class="grid-item" id="col1">
-            <canvas id="canvas" width="800" height="600"></canvas>
+            <canvas id="canvas" width="1200" height="400"></canvas>
         </div>
-        <div class="grid-item" id="col2">Column 2</div>
         <div class="grid-item" id="col3">
             Vehicle count
             <span id="counter" class="counter">0</span>
         </div>
-        <div class="grid-item" id="col4">Column 4</div>
     </div>
 </body>
 

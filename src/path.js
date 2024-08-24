@@ -1,6 +1,6 @@
 import createVehicle from "./vehicle.js";
 
-const colourArray = ['blue', 'pink', 'orange', 'yellow', 'purple', 'green'];
+//const colourArray = ['blue', 'pink', 'orange', 'yellow', 'purple', 'green'];
 
 //Create a path using Beizer curve computation
 export function createPath(p0, p1, p2, p3, numPoints) {
@@ -24,8 +24,8 @@ export function createPath(p0, p1, p2, p3, numPoints) {
 
 //Add a new vehicle to the path provided. This is usually done at the beginning of the path
 export function addNewVehicleToPath(pIdx, pathArr, ctx) {
-    const cIdx = Math.floor(Math.random() * colourArray.length);
-    pathArr[pIdx].vehicle = createVehicle(ctx, pathArr[pIdx].x, pathArr[pIdx].y, colourArray[cIdx]);
+    //const cIdx = Math.floor(Math.random() * colourArray.length);
+    pathArr[pIdx].vehicle = createVehicle(ctx, pathArr[pIdx].x, pathArr[pIdx].y);
     pathArr[pIdx].vehicle.draw();
     return pathArr[pIdx];
 
