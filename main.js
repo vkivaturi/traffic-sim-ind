@@ -1,15 +1,9 @@
 import { createPath, addNewVehicleToPath } from "./src/path.js";
 import { updatePathPointVehicles } from "./src/orchestrator.js";
+import { config } from "./src/config.js";
 
 let ctx;
 let laneArr = [];
-const fps = 4;
-const laneCount = 1;
-
-//Max number of simulation iterations
-let totalIterations = 300;
-//Number of points to be created in the path
-const numPoints = 30;
 
 function init() {
     ctx = document.getElementById("canvas").getContext("2d");
@@ -20,9 +14,9 @@ function init() {
     let interim2 = [600, y]; // Second control point
     let end = [canvas.width, y]; // Ending point
 
-    for (var i = 0; i < laneCount; i++) {
+    for (var i = 0; i < config.NumLanes; i++) {
         //Create lane specific path that the vehicles should follow
-        laneArr[i] = createPath(start, interim1, interim2, end, numPoints);
+        laneArr[i] = createPath(start, interim1, interim2, end, config.NumPathPoints);
 
         start[1] = start[1] + 50;
         interim1[1] = interim1[1] + 50;
@@ -35,7 +29,7 @@ function init() {
 
 function startSimulation() {
     //Limit the total number of iterations or time of the simulation
-    if (totalIterations-- < 0)
+    if (config.NumIterations-- < 0)
         return;
 
     //Clear the canvas and repaint it for each frame refresh
@@ -50,8 +44,7 @@ function startSimulation() {
     //Control the frame refresh period
     setTimeout(() => {
         window.requestAnimationFrame(startSimulation);
-    }, 1000 / fps);
-
+    }, 1000 / config.FramesPerSecond);
 }
 
 //Create road with desired properties

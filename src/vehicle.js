@@ -1,13 +1,9 @@
-//Vehicle speed indicates number of slots a vehicle will travel in each frame
-const VehicleSpeed = Object.freeze({
-    NORMAL: 3,
-    SLOW: 3
-});
+import {config} from "./config.js";
 
 export const vehicleTypes = [
-    { name: 'Auto', weight: 4, speed: VehicleSpeed.NORMAL, color: "yellow" },
-    { name: 'Bus', weight: 2, speed: VehicleSpeed.SLOW, color: "red" },
-    { name: 'Car', weight: 6, speed: VehicleSpeed.NORMAL, color: "green" }
+    { name: 'Auto', weight: 3, speed: config.VehicleSpeed.SLOW, color: "yellow" },
+    { name: 'Bus', weight: 2, speed: config.VehicleSpeed.SLOW, color: "red" },
+    { name: 'Car', weight: 5, speed: config.VehicleSpeed.NORMAL, color: "green" }
 ];
 
 export default function createVehicle(ctx, _x, _y) {

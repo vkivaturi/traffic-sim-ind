@@ -17,7 +17,6 @@ export function moveUpIfPossible(pIdx, pathArr) {
         }
         //var nextIdx = pIdx + 1;
         var nextIdx = increment;
-        console.log(pIdx + " : " + increment);
         if (pathArr[nextIdx].vehicle == null) {
             pathArr[nextIdx].vehicle = pathArr[pIdx].vehicle;
             
