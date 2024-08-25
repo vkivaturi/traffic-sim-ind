@@ -1,11 +1,12 @@
-import { createPath, addNewVehicleToPath } from "./src/path.js";
+import { createPath } from "./src/path.js";
 import { updatePathPointVehicles } from "./src/orchestrator.js";
 import { config } from "./src/config.js";
+import { createRoad, createObstacle } from "./src/road.js";
 
 let ctx;
 let laneArr = [];
 
-function init() {
+function launch() {
     ctx = document.getElementById("canvas").getContext("2d");
 
     let y = 25;
@@ -24,17 +25,29 @@ function init() {
         end[1] = end[1] + 50;
 
     }
-    startSimulation();
+    simulate();
 }
 
-function startSimulation() {
+function simulate() {
     //Limit the total number of iterations or time of the simulation
     if (config.NumIterations-- < 0)
         return;
 
     //Clear the canvas and repaint it for each frame refresh
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    createRoad();
+    createRoad(ctx);
+    
+    //Create obstacles and attach to path points
+    let x1 = laneArr[0][10].x;
+    let y1 = laneArr[0][10].y;
+    laneArr[0][10].obstacleType = config.ObstacleType.POT_HOLE;
+    createObstacle(ctx, x1, y1, config.ObstacleType.POT_HOLE);
+
+    // let x2 = laneArr[0][12].x;
+    // let y2 = laneArr[0][12].y;
+    // laneArr[0][12].obstacleType = config.ObstacleType.BUS_STOP;
+    // createObstacle(ctx, x2, y2, config.ObstacleType.BUS_STOP);
+    //End obstacle creation
 
     //Update the recreated canvas with change in vehicle positions
     laneArr.forEach(function (path) {
@@ -43,20 +56,9 @@ function startSimulation() {
 
     //Control the frame refresh period
     setTimeout(() => {
-        window.requestAnimationFrame(startSimulation);
+        window.requestAnimationFrame(simulate);
     }, 1000 / config.FramesPerSecond);
 }
 
-//Create road with desired properties
-function createRoad() {
-    ctx.fillStyle = "black";
-    ctx.strokeStyle = "white";
-    ctx.setLineDash([10, 15]);
-
-    ctx.fillRect(0, 0, canvas.width, 150);
-    ctx.strokeRect(0, 50, canvas.width, canvas.width);
-    ctx.strokeRect(0, 100, canvas.width, canvas.width);
-}
-
-//Start simulation with the init function
-init();
+//Launch simulation
+launch();

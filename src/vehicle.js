@@ -1,8 +1,8 @@
 import {config} from "./config.js";
 
 export const vehicleTypes = [
-    { name: 'Auto', weight: 3, speed: config.VehicleSpeed.SLOW, color: "yellow" },
-    { name: 'Bus', weight: 2, speed: config.VehicleSpeed.SLOW, color: "red" },
+    { name: 'Auto', weight: 0, speed: config.VehicleSpeed.SLOW, color: "yellow" },
+    { name: 'Bus', weight: 0, speed: config.VehicleSpeed.SLOW, color: "red" },
     { name: 'Car', weight: 5, speed: config.VehicleSpeed.NORMAL, color: "green" }
 ];
 
@@ -14,6 +14,7 @@ export default function createVehicle(ctx, _x, _y) {
         y: _y,
         radius: 15,
         speed: selectVehicle.speed,
+        name: selectVehicle.name,
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
