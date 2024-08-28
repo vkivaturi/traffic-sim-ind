@@ -5,6 +5,7 @@ import { createRoad, createObstacle } from "./src/road.js";
 
 let ctx;
 let laneArr = [];
+let simStartTime = Date.now();
 
 function launch() {
     ctx = document.getElementById("canvas").getContext("2d");
@@ -24,13 +25,15 @@ function launch() {
         interim2[1] = interim2[1] + 50;
         end[1] = end[1] + 50;
 
+        console.log(start);
+
     }
     simulate();
 }
 
 function simulate() {
     //Limit the total number of iterations or time of the simulation
-    if (config.NumIterations-- < 0)
+    if (Date.now() > (simStartTime + config.SimRunTimeSecs*1000))
         return;
 
     //Clear the canvas and repaint it for each frame refresh
@@ -38,10 +41,10 @@ function simulate() {
     createRoad(ctx);
     
     //Create obstacles and attach to path points
-    let x1 = laneArr[0][10].x;
-    let y1 = laneArr[0][10].y;
-    laneArr[0][10].obstacleType = config.ObstacleType.POT_HOLE;
-    createObstacle(ctx, x1, y1, config.ObstacleType.POT_HOLE);
+    // let x1 = laneArr[0][10].x;
+    // let y1 = laneArr[0][10].y;
+    // laneArr[0][10].obstacleType = config.ObstacleType.POT_HOLE;
+    // createObstacle(ctx, x1, y1, config.ObstacleType.POT_HOLE);
 
     // let x2 = laneArr[0][12].x;
     // let y2 = laneArr[0][12].y;

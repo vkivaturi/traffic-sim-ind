@@ -1,8 +1,8 @@
 import {config} from "./config.js";
 
 export const vehicleTypes = [
-    { name: 'Auto', weight: 0, speed: config.VehicleSpeed.SLOW, color: "yellow" },
-    { name: 'Bus', weight: 0, speed: config.VehicleSpeed.SLOW, color: "red" },
+    { name: 'Auto', weight: 1, speed: config.VehicleSpeed.SLOW, color: "yellow" },
+    { name: 'Bus', weight: 1, speed: config.VehicleSpeed.SLOW, color: "red" },
     { name: 'Car', weight: 5, speed: config.VehicleSpeed.NORMAL, color: "green" }
 ];
 
