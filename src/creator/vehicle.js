@@ -1,4 +1,4 @@
-import {config} from "./config.js";
+import {config} from "../config.js";
 
 export const vehicleTypes = [
     { name: 'Auto', weight: 1, speed: config.VehicleSpeed.SLOW, color: "yellow" },

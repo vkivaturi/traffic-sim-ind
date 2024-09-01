@@ -1,4 +1,4 @@
-import { config } from "./config";
+import { config } from "../config";
 
 //Create road with desired properties
 export function createRoad(ctx) {

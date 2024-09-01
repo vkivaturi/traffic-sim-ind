@@ -1,6 +1,7 @@
-import {addNewVehicleToPath} from "./path.js";
-import {moveUpIfPossible} from "./utils/movement.js";
-import {config} from "./config.js";
+import {addNewVehicleToPath} from "../creator/path.js";
+import {moveUpIfPossible} from "./movement.js";
+import {config} from "../config.js";
+import { removeVehicleFromLane } from "../transformer/endofpath.js";
 
 let vehicleAddIntervalMillis = Math.floor(((60*60)/config.VehiclesPerHour) * 1000);
 let vehicleAddTime = 0;
@@ -20,7 +21,7 @@ export function updatePathPointVehicles(pathArr, ctx) {
                 //console.log("Is move up : " + isMoveUp);
             } else if (pathArr[i].position == "end") {
                 //Remove vehicle from end
-                pathArr[i].vehicle = null;
+                removeVehicleFromLane(pathArr, i);
 
                 let vehicleElement = document.getElementById("counter");
                 vehicleElement.textContent++;          

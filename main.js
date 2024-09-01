@@ -1,7 +1,7 @@
-import { createPath } from "./src/path.js";
-import { updatePathPointVehicles } from "./src/orchestrator.js";
+import { createPath } from "./src/creator/path.js";
+import { updatePathPointVehicles } from "./src/preserver/orchestrator.js";
 import { config } from "./src/config.js";
-import { createRoad, createObstacle } from "./src/road.js";
+import { createRoad, createObstacle } from "./src/creator/road.js";
 
 let ctx;
 let laneArr = [];
@@ -53,7 +53,11 @@ function simulate() {
     //End obstacle creation
 
     //Update the recreated canvas with change in vehicle positions
-    laneArr.forEach(function (path) {
+    // laneArr.forEach(function (path) {
+    //     updatePathPointVehicles(path, ctx);
+    // });
+
+    randomIterate(laneArr, (path) => {
         updatePathPointVehicles(path, ctx);
     });
 
@@ -61,6 +65,22 @@ function simulate() {
     setTimeout(() => {
         window.requestAnimationFrame(simulate);
     }, 1000 / config.FramesPerSecond);
+}
+
+//Fisher Yates algo to shuffle lanes
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function randomIterate(array, callback) {
+    const shuffledArray = shuffleArray(array);
+    for (const element of shuffledArray) {
+        callback(element);
+    }
 }
 
 //Launch simulation
