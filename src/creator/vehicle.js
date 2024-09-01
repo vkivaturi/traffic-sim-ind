@@ -1,9 +1,9 @@
-import {config} from "../config.js";
+import { config } from "../config.js";
 
 export const vehicleTypes = [
-    { name: 'Auto', weight: 1, speed: config.VehicleSpeed.SLOW, color: "yellow" },
+    { name: 'Auto', weight: 3, speed: config.VehicleSpeed.SLOW, color: "yellow" },
     { name: 'Bus', weight: 1, speed: config.VehicleSpeed.SLOW, color: "red" },
-    { name: 'Car', weight: 5, speed: config.VehicleSpeed.NORMAL, color: "green" }
+    { name: 'Car', weight: 6, speed: config.VehicleSpeed.NORMAL, color: "green" }
 ];
 
 export default function createVehicle(ctx, _x, _y) {
@@ -13,7 +13,8 @@ export default function createVehicle(ctx, _x, _y) {
         x: _x,
         y: _y,
         radius: 15,
-        speed: selectVehicle.speed,
+        maxSpeed: selectVehicle.speed,
+        obstacleTimeout: 0,
         name: selectVehicle.name,
         draw() {
             ctx.beginPath();
@@ -22,6 +23,13 @@ export default function createVehicle(ctx, _x, _y) {
             ctx.fillStyle = selectVehicle.color;
             ctx.fill();
         },
+        erase() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fillStyle = "black";
+            ctx.fill();
+        }
     };
     return vehicle;
 }

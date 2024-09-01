@@ -24,39 +24,31 @@ function launch() {
         interim1[1] = interim1[1] + 50;
         interim2[1] = interim2[1] + 50;
         end[1] = end[1] + 50;
-
-        console.log(start);
-
     }
+
+    createRoad(ctx);
+
+    //Create obstacles and attach to path points
+    let x1 = laneArr[0][20].x;
+    let y1 = laneArr[0][20].y;
+    laneArr[0][20].obstacleType = config.ObstacleType.BUS_STOP;
+    createObstacle(ctx, x1, y1, config.ObstacleType.BUS_STOP);
+    console.log(`Obstacle -- ${x1} ${y1}`);
+
+    // let x2 = laneArr[1][12].x;
+    // let y2 = laneArr[1][12].y;
+    // laneArr[1][12].obstacleType = config.ObstacleType.POT_HOLE;
+    // createObstacle(ctx, x2, y2, config.ObstacleType.POT_HOLE);
+    //End obstacle creation
+
     simulate();
 }
 
 function simulate() {
-    //Limit the total number of iterations or time of the simulation
-    if (Date.now() > (simStartTime + config.SimRunTimeSecs*1000))
+    //Limit the total number of iterations to time of the simulation
+    if (Date.now() > (simStartTime + config.SimRunTimeSecs * 1000))
         return;
-
-    //Clear the canvas and repaint it for each frame refresh
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    createRoad(ctx);
     
-    //Create obstacles and attach to path points
-    // let x1 = laneArr[0][10].x;
-    // let y1 = laneArr[0][10].y;
-    // laneArr[0][10].obstacleType = config.ObstacleType.POT_HOLE;
-    // createObstacle(ctx, x1, y1, config.ObstacleType.POT_HOLE);
-
-    // let x2 = laneArr[0][12].x;
-    // let y2 = laneArr[0][12].y;
-    // laneArr[0][12].obstacleType = config.ObstacleType.BUS_STOP;
-    // createObstacle(ctx, x2, y2, config.ObstacleType.BUS_STOP);
-    //End obstacle creation
-
-    //Update the recreated canvas with change in vehicle positions
-    // laneArr.forEach(function (path) {
-    //     updatePathPointVehicles(path, ctx);
-    // });
-
     randomIterate(laneArr, (path) => {
         updatePathPointVehicles(path, ctx);
     });
