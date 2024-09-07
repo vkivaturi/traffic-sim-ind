@@ -8,13 +8,14 @@ export const vehicleTypes = [
     { name: 'Car', weight: 6, speed: config.VehicleSpeed.NORMAL, color: "green" }
 ];
 
-export default function createVehicle(ctx, _x, _y) {
+export default function createVehicle(ctx, _x, _y, _laneId) {
     const selectVehicle = getRandomElementByWeight(vehicleTypes);
 
     const vehicle = {
         x: _x,
         y: _y,
         id: vehicleId++,
+        laneId: _laneId,
         radius: 15,
         maxSpeed: selectVehicle.speed,
         obstacleTimeout: 0,

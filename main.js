@@ -2,6 +2,7 @@ import { createPath } from "./src/creator/path.js";
 import { updatePathPointVehicles } from "./src/preserver/orchestrator.js";
 import { config } from "./src/config.js";
 import { createRoad, createObstacle } from "./src/creator/road.js";
+import { GlobalMemberStore } from "./src/data/system.js";
 
 let ctx;
 let laneArr = [];
@@ -25,6 +26,8 @@ function launch() {
         interim2[1] = interim2[1] + 50;
         end[1] = end[1] + 50;
     }
+    //Add lane array to a global store
+    GlobalMemberStore.putMember({id: "laneArray", value: laneArr});
 
     createRoad(ctx);
 
@@ -35,10 +38,6 @@ function launch() {
     // createObstacle(ctx, x1, y1, config.ObstacleType.BUS_STOP);
     // console.log(`Obstacle -- ${x1} ${y1}`);
 
-    // let x2 = laneArr[1][12].x;
-    // let y2 = laneArr[1][12].y;
-    // laneArr[1][12].obstacleType = config.ObstacleType.POT_HOLE;
-    // createObstacle(ctx, x2, y2, config.ObstacleType.POT_HOLE);
     //End obstacle creation
 
     simulate();
@@ -54,15 +53,22 @@ function simulate() {
     createRoad(ctx);
 
     //Create obstacles and attach to path points
-    let x1 = laneArr[0][5].x;
-    let y1 = laneArr[0][5].y;
-    laneArr[0][5].obstacleType = config.ObstacleType.POT_HOLE;
-    createObstacle(ctx, x1, y1, config.ObstacleType.POT_HOLE);
+    //let x1 = laneArr[0][5].x;
+    //let y1 = laneArr[0][5].y;
+    //laneArr[0][5].obstacleType = config.ObstacleType.POT_HOLE;
+    //createObstacle(ctx, x1, y1, config.ObstacleType.POT_HOLE);
 
+    //Create obstacles and attach to path points
+    let x2 = laneArr[1][7].x;
+    let y2 = laneArr[1][7].y;
+    laneArr[1][7].obstacleType = config.ObstacleType.POT_HOLE;
+    createObstacle(ctx, x2, y2, config.ObstacleType.POT_HOLE);
+    
     //Update the recreated canvas with change in vehicle positions
     var tempArray = getRandomArray(config.NumLanes);
     tempArray.forEach(function (i) {
-        updatePathPointVehicles(laneArr[i - 1], ctx);
+        var laneId = i - 1;
+        updatePathPointVehicles(laneId, ctx);
     });
 
     //Control the frame refresh period

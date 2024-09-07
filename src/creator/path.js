@@ -23,9 +23,9 @@ export function createPath(p0, p1, p2, p3, numPoints) {
 }
 
 //Add a new vehicle to the path provided. This is usually done at the beginning of the path
-export function addNewVehicleToPath(pIdx, pathArr, ctx) {
+export function addNewVehicleToPath(pIdx, pathArr, ctx, laneId) {
     //const cIdx = Math.floor(Math.random() * colourArray.length);
-    pathArr[pIdx].vehicle = createVehicle(ctx, pathArr[pIdx].x, pathArr[pIdx].y);
+    pathArr[pIdx].vehicle = createVehicle(ctx, pathArr[pIdx].x, pathArr[pIdx].y, laneId);
     pathArr[pIdx].vehicle.draw();
     return pathArr[pIdx];
 

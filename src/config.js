@@ -12,7 +12,7 @@ export const config = {
     //Simulation run time (in seconds)
     SimRunTimeSecs : 15,
     //Traffic to be handled (vehicles per hour)
-    VehiclesPerHour: 10000,
+    VehiclesPerHour: 20000,
     //Number of points to be created in the path
     NumPathPoints : 20,
     ObstacleType : Object.freeze({
