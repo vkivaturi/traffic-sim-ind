@@ -29,11 +29,11 @@ function launch() {
     createRoad(ctx);
 
     //Create obstacles and attach to path points
-    let x1 = laneArr[0][20].x;
-    let y1 = laneArr[0][20].y;
-    laneArr[0][20].obstacleType = config.ObstacleType.BUS_STOP;
-    createObstacle(ctx, x1, y1, config.ObstacleType.BUS_STOP);
-    console.log(`Obstacle -- ${x1} ${y1}`);
+    // let x1 = laneArr[0][20].x;
+    // let y1 = laneArr[0][20].y;
+    // laneArr[0][20].obstacleType = config.ObstacleType.BUS_STOP;
+    // createObstacle(ctx, x1, y1, config.ObstacleType.BUS_STOP);
+    // console.log(`Obstacle -- ${x1} ${y1}`);
 
     // let x2 = laneArr[1][12].x;
     // let y2 = laneArr[1][12].y;
@@ -48,9 +48,21 @@ function simulate() {
     //Limit the total number of iterations to time of the simulation
     if (Date.now() > (simStartTime + config.SimRunTimeSecs * 1000))
         return;
-    
-    randomIterate(laneArr, (path) => {
-        updatePathPointVehicles(path, ctx);
+
+    //Clear the canvas and repaint it for each frame refresh
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    createRoad(ctx);
+
+    //Create obstacles and attach to path points
+    let x1 = laneArr[0][5].x;
+    let y1 = laneArr[0][5].y;
+    laneArr[0][5].obstacleType = config.ObstacleType.POT_HOLE;
+    createObstacle(ctx, x1, y1, config.ObstacleType.POT_HOLE);
+
+    //Update the recreated canvas with change in vehicle positions
+    var tempArray = getRandomArray(config.NumLanes);
+    tempArray.forEach(function (i) {
+        updatePathPointVehicles(laneArr[i - 1], ctx);
     });
 
     //Control the frame refresh period
@@ -59,20 +71,16 @@ function simulate() {
     }, 1000 / config.FramesPerSecond);
 }
 
-//Fisher Yates algo to shuffle lanes
-function shuffleArray(array) {
+function getRandomArray(size) {
+    // Generate an array of numbers from 1 to size
+    const array = Array.from({ length: size }, (_, index) => index + 1);
+
+    // Shuffle the array using Fisher-Yates algorithm
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
-}
-
-function randomIterate(array, callback) {
-    const shuffledArray = shuffleArray(array);
-    for (const element of shuffledArray) {
-        callback(element);
-    }
 }
 
 //Launch simulation
