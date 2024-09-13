@@ -4,10 +4,11 @@ import {config} from "../config.js";
 import { removeVehicleFromLane } from "../transformer/endofpath.js";
 import { GlobalMemberStore } from "../data/system.js";
 
-let vehicleAddIntervalMillis = Math.floor(((60*60)/config.VehiclesPerHour) * 1000);
+//let vehicleAddIntervalMillis = Math.floor(((60*60)/config.VehiclesPerHour) * 1000);
 let vehicleAddTime = 0;
 //Main function that updates path in every frame refresh
 export function updatePathPointVehicles(laneId, ctx) {
+    const vehicleAddIntervalMillis = GlobalMemberStore.getMember("vehiclesPerHourInMillis").member.value;
     var pathArr = GlobalMemberStore.getMember("laneArray").member.value[laneId];
 
     for (var i = pathArr.length - 1; i >= 0; i--) {
