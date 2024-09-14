@@ -1,7 +1,7 @@
 import { createPath } from "./src/creator/path.js";
 import { updatePathPointVehicles } from "./src/preserver/orchestrator.js";
 import { config } from "./src/config.js";
-import { createRoad, createObstacle } from "./src/creator/road.js";
+import { createRoad, createObstacle, removeObstacle } from "./src/creator/road.js";
 import { GlobalMemberStore } from "./src/data/system.js";
 
 let ctx;
@@ -9,6 +9,14 @@ let simStartTime = Date.now();
 
 function launch() {
     ctx = document.getElementById("canvas").getContext("2d");
+    GlobalMemberStore.putMember({ id: "ctx", value: ctx });
+
+    //Initialise lane array
+    if (GlobalMemberStore.getMember("laneArray").member === undefined) {
+        GlobalMemberStore.putMember({ id: "laneArray", value: createLanesArray() });
+    } else {
+        GlobalMemberStore.updateMember({ id: "laneArray", value: createLanesArray() });
+    }
 
     //Add simulation time to global store
     const slider1 = document.getElementById('simulationSlider');
@@ -17,7 +25,7 @@ function launch() {
 
     slider1.addEventListener('input', function () {
         sliderValue1.textContent = slider1.value; // Display current value of the slider
-        GlobalMemberStore.updateMember({ id: "simRunTimeSecs", value: (slider1.value * 60) });
+        GlobalMemberStore.updateMember({ id: "simRunTimeSecs", value: (slider1.value) });
         console.log(GlobalMemberStore.getMember("simRunTimeSecs").member.value);
 
     });
@@ -33,33 +41,71 @@ function launch() {
         GlobalMemberStore.updateMember({ id: "vehiclesPerHourInMillis", value: vehiclesPerHourToMillis });
     });
 
+    // Adding event listener for lane checkbox
+    const checkLane1 = document.getElementById('potholeLane1');
+    const checkLane2 = document.getElementById('potholeLane2');
+    const checkLane3 = document.getElementById('potholeLane3');
+    checkLane1.addEventListener('click', function () {
+        let obId = "obstacle1";
+        if (this.checked) {
+            //Create obstacles and attach to path points
+            let [laneId, pathPointId] = [0, 10];
+            //let pathPointId = 10
+            let obType = config.ObstacleType.POT_HOLE;   
+            createObstacle(obId, obType, laneId, pathPointId);
+        } else {
+            //Remove the obstacle
+            removeObstacle(obId);
+        }
+    });
+    checkLane2.addEventListener('click', function () {
+        let obId = "obstacle2";
+        if (this.checked) {
+            //Create obstacles and attach to path points
+            let [laneId, pathPointId] = [1, 15];
+            //let pathPointId = 10
+            let obType = config.ObstacleType.POT_HOLE;   
+            createObstacle(obId, obType, laneId, pathPointId);
+        } else {
+            //Remove the obstacle
+            removeObstacle(obId);
+        }
+    });
+    checkLane3.addEventListener('click', function () {
+        let obId = "obstacle3";
+        if (this.checked) {
+            //Create obstacles and attach to path points
+            let [laneId, pathPointId] = [2, 20];
+            //let pathPointId = 10
+            let obType = config.ObstacleType.POT_HOLE;   
+            createObstacle(obId, obType, laneId, pathPointId);
+        } else {
+            //Remove the obstacle
+            removeObstacle(obId);
+        }
+    });
+
     //Start simulation button click event capture
     startSimulationBtn.addEventListener('click', function () {
         simStartTime = Date.now();
-        //GlobalMemberStore.putMember({ id: "laneArray", value: null });
-        if (GlobalMemberStore.getMember("laneArray").member === undefined) {
-            GlobalMemberStore.putMember({ id: "laneArray", value: createLanesArray() });
-        } else {
-            GlobalMemberStore.updateMember({ id: "laneArray", value: createLanesArray() });
-        }
-
-        //Initialise lanes array
-//        createLanesArray();
-        //Add lane array to a global store
-        //GlobalMemberStore.putMember({ id: "laneArray", value: createLanesArray() });
         simulate();
     });
 
+    //Stop simulation button click event capture
+    stopSimulationBtn.addEventListener('click', function () {
+        //Break the loop in Simulate function
+        simStartTime = 0;
+    });
+
+    //Progress bar updates
+    const progressBar = document.getElementById('progressBar');
+    //const increaseProgressBtn = document.getElementById('startSimulationBtn');
+    // Function to update the progress bar value
+    //increaseProgressBtn.addEventListener('click', function () {
+    //    updateProgressBar(progressBar);
+    //});
+
     createRoad(ctx);
-
-    //Create obstacles and attach to path points
-    // let x1 = laneArr[0][20].x;
-    // let y1 = laneArr[0][20].y;
-    // laneArr[0][20].obstacleType = config.ObstacleType.BUS_STOP;
-    // createObstacle(ctx, x1, y1, config.ObstacleType.BUS_STOP);
-    // console.log(`Obstacle -- ${x1} ${y1}`);
-
-    //End obstacle creation
 
     //simulate();
 }
@@ -94,11 +140,6 @@ function simulate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     createRoad(ctx);
 
-    //Create obstacles and attach to path points
-    //let x1 = laneArr[0][5].x;
-    //let y1 = laneArr[0][5].y;
-    //laneArr[0][5].obstacleType = config.ObstacleType.POT_HOLE;
-    //createObstacle(ctx, x1, y1, config.ObstacleType.POT_HOLE);
 
     //Create obstacles and attach to path points
     // let x2 = laneArr[1][7].x;
@@ -112,6 +153,9 @@ function simulate() {
         var laneId = i - 1;
         updatePathPointVehicles(laneId, ctx);
     });
+
+    //Update progress bar
+    updateProgressBar(progressBar);
 
     //Control the frame refresh period
     setTimeout(() => {
@@ -129,6 +173,15 @@ function getRandomArray(size) {
         [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
+}
+
+function updateProgressBar(progressBar) {
+    let currentValue = parseInt(progressBar.getAttribute('aria-valuenow'));
+    //if (currentValue < 100) {
+    currentValue += 1; // Increase by 10%
+    progressBar.style.width = currentValue + '%'; // Update the width
+    progressBar.setAttribute('aria-valuenow', currentValue); // Update the aria value
+    progressBar.textContent = currentValue + '%';
 }
 
 //Launch simulation

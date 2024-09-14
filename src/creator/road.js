@@ -1,4 +1,6 @@
+import { GlobalMemberStore } from "/src/data/system.js";
 import { config } from "../config";
+import { Obstacle } from "/src/creator/obstacle.js";
 
 //Create road with desired properties
 export function createRoad(ctx) {
@@ -11,11 +13,42 @@ export function createRoad(ctx) {
     ctx.strokeRect(0, 100, canvas.width, canvas.width);
 }
 
-//Add obstacles on road
-export function createObstacle(ctx, x, y, obType) {
+//Add obstacle image to road
+export function createObstacle(obId, obType, laneId, pathPointId) {
+    //let obstacle = GlobalMemberStore.getMember(obId).member.value;
+    let ctx = GlobalMemberStore.getMember("ctx").member.value;
+    let tempLaneArr = GlobalMemberStore.getMember("laneArray").member.value;
+    let obInstance = new Obstacle(tempLaneArr[laneId][pathPointId].x, tempLaneArr[laneId][[pathPointId]].y, obType);
+
+    //Check if alrady exists and decide on add or update
+    if (GlobalMemberStore.getMember(obId).member === undefined) {
+        GlobalMemberStore.putMember({ id: obId, value: obInstance });
+    } else {
+        GlobalMemberStore.updateMember({ id: obId, value: obInstance });
+    }
+    //let obstacle = GlobalMemberStore.getMember(obId).member.value;
+
+    //Mark the specific path point x,y as obstacle
+    tempLaneArr[laneId][pathPointId].obstacleType = config.ObstacleType.POT_HOLE;
+
+    //Add image at that point
     const img = new Image();
     img.addEventListener("load", () => {
-        ctx.drawImage(img, x, y-25, 50, 50);
+        ctx.drawImage(img, obInstance.x, obInstance.y - 25, 50, 50);
     });
-    img.src = obType.image;
+    img.src = obInstance.type.image;
+}
+
+//Remove obstacle image to road
+export function removeObstacle(obId) {
+    let obstacle = GlobalMemberStore.getMember(obId).member.value;
+    let ctx = GlobalMemberStore.getMember("ctx").member.value;
+    let tempLaneArr = GlobalMemberStore.getMember("laneArray").member.value;
+
+    //Remove obstacle from lane array
+    tempLaneArr[1][15].obstacleType = null;
+
+    //Clear the image 
+    ctx.fillStyle = "black";
+    ctx.fillRect(obstacle.x, obstacle.y - 25, 50, 50);
 }

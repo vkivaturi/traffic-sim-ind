@@ -14,10 +14,10 @@ export const config = {
     //Traffic to be handled (vehicles per hour)
     //VehiclesPerHour: 10000,
     //Number of points to be created in the path
-    NumPathPoints : 20,
+    NumPathPoints : 30,
     ObstacleType : Object.freeze({
-        POT_HOLE : {image: "/images/warning.png", timeout: 1000},
-        BUS_STOP : {image: "/images/bus_stop.png", timeout: 5000},
+        POT_HOLE : {image: "/images/pothole.png", timeout: 1000},
+        BUS_STOP : {image: "/images/busstop.png", timeout: 5000},
         PEDESTRIAN_CROSSING : {image: "/images/pederstrian.png", speed: 0, timeout: 1000}
     })
 }
