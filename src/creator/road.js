@@ -26,11 +26,10 @@ export function createObstacle(obId, obType, laneId, pathPointId) {
     } else {
         GlobalMemberStore.updateMember({ id: obId, value: obInstance });
     }
-    //let obstacle = GlobalMemberStore.getMember(obId).member.value;
 
     //Mark the specific path point x,y as obstacle
-    tempLaneArr[laneId][pathPointId].obstacleType = config.ObstacleType.POT_HOLE;
-
+    tempLaneArr[laneId][pathPointId].obstacleType = obType;
+    
     //Add image at that point
     const img = new Image();
     img.addEventListener("load", () => {

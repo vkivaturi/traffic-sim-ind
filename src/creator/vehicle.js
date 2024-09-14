@@ -11,7 +11,6 @@ export const vehicleTypes = [
 export default function createVehicle(ctx, _x, _y, _laneId) {
     const selectVehicle = getRandomElementByWeight(vehicleTypes);
 
-
     const vehicle = {
         x: _x,
         y: _y,
@@ -24,7 +23,7 @@ export default function createVehicle(ctx, _x, _y, _laneId) {
         draw() {
             const img = new Image();
             img.addEventListener("load", () => {
-                ctx.drawImage(img, this.x, this.y-25, 50, 50);
+                ctx.drawImage(img, this.x, this.y-25, 48, 48);
             });
             img.src = selectVehicle.image;
         

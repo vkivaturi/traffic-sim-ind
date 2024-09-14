@@ -12,7 +12,6 @@ export function addUIEventHandlers() {
         sliderValue1.textContent = slider1.value; // Display current value of the slider
         GlobalMemberStore.updateMember({ id: "simRunTimeSecs", value: (slider1.value) });
         console.log(GlobalMemberStore.getMember("simRunTimeSecs").member.value);
-
     });
 
     //Add traffic density setting to global store
@@ -26,15 +25,17 @@ export function addUIEventHandlers() {
         GlobalMemberStore.updateMember({ id: "vehiclesPerHourInMillis", value: vehiclesPerHourToMillis });
     });
 
-    // Adding event listener for lane checkbox
+    // Adding event listener for lane checkbox and bus stop selection
     const checkLane1 = document.getElementById('potholeLane1');
     const checkLane2 = document.getElementById('potholeLane2');
     const checkLane3 = document.getElementById('potholeLane3');
+    const busStop = document.getElementById('busStop');
+
     checkLane1.addEventListener('click', function () {
         let obId = "obstacle1";
         if (this.checked) {
             //Create obstacles and attach to path points
-            let [laneId, pathPointId] = [0, 10];
+            let [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[0];
             //let pathPointId = 10
             let obType = config.ObstacleType.POT_HOLE;
             createObstacle(obId, obType, laneId, pathPointId);
@@ -47,7 +48,7 @@ export function addUIEventHandlers() {
         let obId = "obstacle2";
         if (this.checked) {
             //Create obstacles and attach to path points
-            let [laneId, pathPointId] = [1, 15];
+            let [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[1];
             //let pathPointId = 10
             let obType = config.ObstacleType.POT_HOLE;
             createObstacle(obId, obType, laneId, pathPointId);
@@ -60,7 +61,7 @@ export function addUIEventHandlers() {
         let obId = "obstacle3";
         if (this.checked) {
             //Create obstacles and attach to path points
-            let [laneId, pathPointId] = [2, 20];
+            let [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[2];
             //let pathPointId = 10
             let obType = config.ObstacleType.POT_HOLE;
             createObstacle(obId, obType, laneId, pathPointId);
@@ -70,15 +71,18 @@ export function addUIEventHandlers() {
         }
     });
 
-    //Start simulation button click event capture
-    startSimulationBtn.addEventListener('click', function () {
-        simStartTime = Date.now();
-        simulate();
+    busStop.addEventListener('click', function () {
+        let obId = "busStop";
+        if (this.checked) {
+            //Create bus stop and attach to path points
+            //TODO - Assuming only 1 bus stop
+            let [laneId, pathPointId] = GlobalMemberStore.getMember("busStopPathPoints").member.value[0];
+            let obType = config.ObstacleType.BUS_STOP;
+            createObstacle(obId, obType, laneId, pathPointId);
+        } else {
+            //Remove the obstacle
+            removeObstacle(obId);
+        }
     });
 
-    //Stop simulation button click event capture
-    stopSimulationBtn.addEventListener('click', function () {
-        //Break the loop in Simulate function
-        simStartTime = 0;
-    });
 }

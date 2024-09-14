@@ -6,11 +6,14 @@ import { addUIEventHandlers } from "/src/creator/eventhandlers.js";
 import { GlobalMemberStore } from "/src/data/system.js";
 
 let ctx;
-let simStartTime = Date.now();
+//let simStartTime = Date.now();
 
 function launch() {
     ctx = document.getElementById("canvas").getContext("2d");
     GlobalMemberStore.putMember({ id: "ctx", value: ctx });
+
+    //Initialise
+    GlobalMemberStore.putMember({ id: "simStartTimeMillis", value: Date.now() });
 
     //Initialise lane array
     if (GlobalMemberStore.getMember("laneArray").member === undefined) {
@@ -19,8 +22,27 @@ function launch() {
         GlobalMemberStore.updateMember({ id: "laneArray", value: createLanesArray() });
     }
 
+    //Pothole locations in the lane path array are predefined
+    let potholePathPoints = [[0, 10], [1, 15], [2, 20]];
+    GlobalMemberStore.putMember({ id: "potholePathPoints", value: potholePathPoints });
+
+    //Bus stop location in the lane path array are predefined
+    let busStopPathPoints = [[0, 25]];
+    GlobalMemberStore.putMember({ id: "busStopPathPoints", value: busStopPathPoints });
+
     //Add simulation time to global store
     addUIEventHandlers();
+
+    //Start simulation button click event capture
+    startSimulationBtn.addEventListener('click', function () {
+        GlobalMemberStore.updateMember({ id: "simStartTimeMillis", value: Date.now() });
+        simulate();
+    });
+    //Stop simulation button click event capture
+    stopSimulationBtn.addEventListener('click', function () {
+        //Break the loop in Simulate function
+        GlobalMemberStore.updateMember({ id: "simStartTimeMillis", value: 0 });
+    });
 
     //Progress bar updates
     const progressBar = document.getElementById('progressBar');
@@ -31,8 +53,6 @@ function launch() {
     //});
 
     createRoad(ctx);
-
-    //simulate();
 }
 
 function createLanesArray() {
@@ -57,13 +77,15 @@ function createLanesArray() {
 
 function simulate() {
     //Limit the total number of iterations to time of the simulation
-    //if (Date.now() > (simStartTime + config.SimRunTimeSecs * 1000))
-    if (Date.now() > (simStartTime + GlobalMemberStore.getMember("simRunTimeSecs").member.value * 1000))
+    let simStartTimeMillis = GlobalMemberStore.getMember("simStartTimeMillis").member.value;
+    if (Date.now() > (simStartTimeMillis + GlobalMemberStore.getMember("simRunTimeSecs").member.value * 1000)) {
+        //Simulation run time is reached. Exit simulation
+        updateProgressBar(progressBar, 100);    
         return;
+    }
 
-    //Clear the canvas and repaint it for each frame refresh
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    createRoad(ctx);
+    //Obstacles get overriden by moving vehicles. Render them again in each iteration
+    addAllObstacles();
 
     //Update the recreated canvas with change in vehicle positions
     var tempArray = getRandomArray(config.NumLanes);
@@ -93,13 +115,55 @@ function getRandomArray(size) {
     return array;
 }
 
-function updateProgressBar(progressBar) {
-    let currentValue = parseInt(progressBar.getAttribute('aria-valuenow'));
-    //if (currentValue < 100) {
-    currentValue += 1; // Increase by 10%
-    progressBar.style.width = currentValue + '%'; // Update the width
-    progressBar.setAttribute('aria-valuenow', currentValue); // Update the aria value
-    progressBar.textContent = currentValue + '%';
+//Update proress bar. Value is optional. If present, it will be used directly
+function updateProgressBar(progressBar, value) {
+
+    let newValue = 0;
+    if (value !== undefined) {
+        newValue = value;
+    } else {
+        //Calculate the progress value since nothing is passed from caller
+        let simRunTimeSecs = GlobalMemberStore.getMember("simRunTimeSecs").member.value;
+        let simStartTimeMillis = GlobalMemberStore.getMember("simStartTimeMillis").member.value;
+        let currentTimeMillis = Date.now();
+
+        newValue = Math.floor((currentTimeMillis - simStartTimeMillis) * 100 / (simRunTimeSecs * 1000));
+    }
+    //console.log(`${simRunTimeSecs} ${simStartTimeMillis} ${currentTimeMillis} ${newValue}`)
+    progressBar.style.width = newValue + '%'; // Update the width
+    progressBar.setAttribute('aria-valuenow', newValue); // Update the aria value
+    progressBar.textContent = newValue + '%';
+}
+
+function addAllObstacles() {
+    let potholePathPointsArr = GlobalMemberStore.getMember("potholePathPoints").member.value;
+    potholePathPointsArr.forEach(function (valueLanePathPoint) {
+        let [laneId, pathPointId] = valueLanePathPoint;
+        let obstaclePathPoint = GlobalMemberStore.getMember("laneArray").member.value[laneId][pathPointId];
+        if (obstaclePathPoint.obstacleType !== undefined) {
+            //Add image at that point
+            const img = new Image();
+            img.addEventListener("load", () => {
+                ctx.drawImage(img, obstaclePathPoint.x, obstaclePathPoint.y - 25, 50, 50);
+            });
+            img.src = obstaclePathPoint.obstacleType.image;
+        }
+    });
+
+    let busStopPathPointsArr = GlobalMemberStore.getMember("busStopPathPoints").member.value;
+    busStopPathPointsArr.forEach(function (valueLanePathPoint) {
+        let [laneId, pathPointId] = valueLanePathPoint;
+        let obstaclePathPoint = GlobalMemberStore.getMember("laneArray").member.value[laneId][pathPointId];
+        if (obstaclePathPoint.obstacleType !== undefined) {
+            //Add image at that point
+            const img = new Image();
+            img.addEventListener("load", () => {
+                ctx.drawImage(img, obstaclePathPoint.x, obstaclePathPoint.y - 25, 50, 50);
+            });
+            img.src = obstaclePathPoint.obstacleType.image;
+        }
+    });
+
 }
 
 //Launch simulation
