@@ -1,4 +1,3 @@
-Here's a sample `README.md` file for your JavaScript and HTML5 Canvas-based traffic simulation project:
 
 ---
 
@@ -76,5 +75,3 @@ To customize the simulation for different traffic patterns or road conditions:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-
-Feel free to modify this `README.md` as per your specific project details or repository information.
