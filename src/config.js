@@ -9,12 +9,7 @@ export const config = {
     }),
     FramesPerSecond : 5,
     NumLanes : 3,
-    //Simulation run time (in seconds)
-    //SimRunTimeSecs : 1,
-    //Traffic to be handled (vehicles per hour)
-    //VehiclesPerHour: 10000,
-    //Number of points to be created in the path
-    NumPathPoints : 30,
+    NumPathPoints : 40,
     ObstacleType : Object.freeze({
         POT_HOLE : {image: "/images/pothole.png", timeout: 1000},
         BUS_STOP : {image: "/images/bus-stop.png", timeout: 5000},

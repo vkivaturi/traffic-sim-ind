@@ -24,7 +24,7 @@ function initialise() {
     }
 
     //Pothole locations in the lane path array are predefined
-    let potholePathPoints = [[0, 10], [1, 15], [2, 20]];
+    let potholePathPoints = [[0, 20], [1, 15], [2, 20]];
     GlobalMemberStore.putMember({ id: "potholePathPoints", value: potholePathPoints });
 
     //Bus stop location in the lane path array are predefined
@@ -138,6 +138,7 @@ function updateProgressBar(progressBar, value) {
 
 function addAllObstacles() {
     let potholePathPointsArr = GlobalMemberStore.getMember("potholePathPoints").member.value;
+    let ctx = GlobalMemberStore.getMember("ctx").member.value;
     potholePathPointsArr.forEach(function (valueLanePathPoint) {
         let [laneId, pathPointId] = valueLanePathPoint;
         let obstaclePathPoint = GlobalMemberStore.getMember("laneArray").member.value[laneId][pathPointId];
@@ -148,6 +149,7 @@ function addAllObstacles() {
                 ctx.drawImage(img, obstaclePathPoint.x, obstaclePathPoint.y - 25, 50, 50);
             });
             img.src = obstaclePathPoint.obstacleType.image;
+            console.log(`Added obstacle ${obstaclePathPoint.obstacleType} to ${laneId}`)
         }
     });
 

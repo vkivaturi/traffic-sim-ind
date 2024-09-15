@@ -50,7 +50,6 @@ export function addUIEventHandlers() {
         if (this.checked) {
             //Create obstacles and attach to path points
             let [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[1];
-            //let pathPointId = 10
             let obType = config.ObstacleType.POT_HOLE;
             createObstacle(obId, obType, laneId, pathPointId);
         } else {
@@ -63,7 +62,6 @@ export function addUIEventHandlers() {
         if (this.checked) {
             //Create obstacles and attach to path points
             let [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[2];
-            //let pathPointId = 10
             let obType = config.ObstacleType.POT_HOLE;
             createObstacle(obId, obType, laneId, pathPointId);
         } else {
