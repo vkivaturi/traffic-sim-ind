@@ -4,16 +4,17 @@ import { config } from "/src/config.js";
 import { createRoad } from "/src/creator/road.js";
 import { addUIEventHandlers } from "/src/creator/eventhandlers.js";
 import { GlobalMemberStore } from "/src/data/system.js";
+import { Analytics } from "./src/creator/analytics";
 
-let ctx;
-//let simStartTime = Date.now();
-
-function launch() {
-    ctx = document.getElementById("canvas").getContext("2d");
+function initialise() {
+    let ctx = document.getElementById("canvas").getContext("2d");
     GlobalMemberStore.putMember({ id: "ctx", value: ctx });
 
     //Initialise
     GlobalMemberStore.putMember({ id: "simStartTimeMillis", value: Date.now() });
+    GlobalMemberStore.putMember({ id: "isSimulationActive", value: false });
+
+    GlobalMemberStore.putMember({ id: "vehicleCounter", value: 0 });
 
     //Initialise lane array
     if (GlobalMemberStore.getMember("laneArray").member === undefined) {
@@ -36,23 +37,19 @@ function launch() {
     //Start simulation button click event capture
     startSimulationBtn.addEventListener('click', function () {
         GlobalMemberStore.updateMember({ id: "simStartTimeMillis", value: Date.now() });
+        GlobalMemberStore.updateMember({ id: "isSimulationActive", value: true });  
         simulate();
     });
     //Stop simulation button click event capture
     stopSimulationBtn.addEventListener('click', function () {
         //Break the loop in Simulate function
         GlobalMemberStore.updateMember({ id: "simStartTimeMillis", value: 0 });
+        GlobalMemberStore.updateMember({ id: "isSimulationActive", value: false });  
     });
 
-    //Progress bar updates
-    const progressBar = document.getElementById('progressBar');
-    //const increaseProgressBtn = document.getElementById('startSimulationBtn');
-    // Function to update the progress bar value
-    //increaseProgressBtn.addEventListener('click', function () {
-    //    updateProgressBar(progressBar);
-    //});
-
     createRoad(ctx);
+
+    Analytics.createAnalytics();
 }
 
 function createLanesArray() {
@@ -78,9 +75,13 @@ function createLanesArray() {
 function simulate() {
     //Limit the total number of iterations to time of the simulation
     let simStartTimeMillis = GlobalMemberStore.getMember("simStartTimeMillis").member.value;
+
+    Analytics.updateAnalytics();
+
     if (Date.now() > (simStartTimeMillis + GlobalMemberStore.getMember("simRunTimeSecs").member.value * 1000)) {
         //Simulation run time is reached. Exit simulation
         updateProgressBar(progressBar, 100);    
+        GlobalMemberStore.updateMember({ id: "isSimulationActive", value: false });
         return;
     }
 
@@ -91,7 +92,7 @@ function simulate() {
     var tempArray = getRandomArray(config.NumLanes);
     tempArray.forEach(function (i) {
         var laneId = i - 1;
-        updatePathPointVehicles(laneId, ctx);
+        updatePathPointVehicles(laneId, GlobalMemberStore.getMember("ctx").member.value);
     });
 
     //Update progress bar
@@ -166,5 +167,5 @@ function addAllObstacles() {
 
 }
 
-//Launch simulation
-launch();
+//Initialise simulation
+initialise();

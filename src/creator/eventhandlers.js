@@ -5,12 +5,13 @@ import { createObstacle, removeObstacle } from "/src/creator/road.js";
 
 //Event handlers for all the widgets in UI are defined here
 export function addUIEventHandlers() {
+    //Process the simulation time slider value
     const slider1 = document.getElementById('simulationSlider');
     const sliderValue1 = document.getElementById('simulationSliderValue');
-    GlobalMemberStore.putMember({ id: "simRunTimeSecs", value: (slider1.value) });
+    GlobalMemberStore.putMember({ id: "simRunTimeSecs", value: (slider1.value)*60 });
     slider1.addEventListener('input', function () {
         sliderValue1.textContent = slider1.value; // Display current value of the slider
-        GlobalMemberStore.updateMember({ id: "simRunTimeSecs", value: (slider1.value) });
+        GlobalMemberStore.updateMember({ id: "simRunTimeSecs", value: (slider1.value)*60 });
         console.log(GlobalMemberStore.getMember("simRunTimeSecs").member.value);
     });
 

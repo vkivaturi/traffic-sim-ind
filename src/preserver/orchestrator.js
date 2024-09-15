@@ -1,6 +1,5 @@
 import {addNewVehicleToPath} from "../creator/path.js";
 import {moveUpIfPossible} from "./movement.js";
-import {config} from "../config.js";
 import { removeVehicleFromLane } from "../transformer/endofpath.js";
 import { GlobalMemberStore } from "../data/system.js";
 
@@ -26,9 +25,7 @@ export function updatePathPointVehicles(laneId, ctx) {
             } else if (pathArr[i].position == "end") {
                 //Remove vehicle from end
                 removeVehicleFromLane(pathArr, i);
-
-                let vehicleElement = document.getElementById("counter");
-                vehicleElement.textContent++;          
+                GlobalMemberStore.updateMember({ id: "vehicleCounter", value: GlobalMemberStore.getMember("vehicleCounter").member.value + 1 });          
             }
         }
     }

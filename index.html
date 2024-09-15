@@ -39,7 +39,9 @@
         }
     </style>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="main.js" type="module"></script>
+
 </head>
 
 <body>
@@ -49,8 +51,8 @@
             <div class="checkbox-grid">
 
                 <label>Duration of the simulation</label>
-                <label><input type="range" min="1" max="20" value="5" id="simulationSlider"> <span
-                        id="simulationSliderValue">5</span>&nbsp;minutes</label>
+                <label><input type="range" min="1" max="20" value="1" id="simulationSlider"> <span
+                        id="simulationSliderValue">1</span>&nbsp;minutes</label>
                 <label>Traffic density (vehicles per hour)</label>
                 <label><input type="range" min="500" max="40000" value="10000" step="500" id="trafficSlider"> <span
                         id="trafficSliderValue">10000</span></label>
@@ -78,8 +80,8 @@
                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <br>
-            Vehicle count
-            <span id="counter" class="counter">0</span>
+            <!-- Canvas element where the chart will be rendered -->
+            <canvas id="vehicleLineChart" width="1300" height="200"></canvas>
         </div>
     </div>
 
