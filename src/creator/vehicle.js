@@ -25,13 +25,7 @@ export default function createVehicle(ctx, _x, _y, _laneId) {
             img.addEventListener("load", () => {
                 ctx.drawImage(img, this.x, this.y-25, 48, 48);
             });
-            img.src = selectVehicle.image;
-        
-            // ctx.beginPath();
-            // ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
-            // ctx.closePath();
-            // ctx.fillStyle = selectVehicle.color;
-            // ctx.fill();
+            img.src = selectVehicle.image;      
         }
     };
     return vehicle;

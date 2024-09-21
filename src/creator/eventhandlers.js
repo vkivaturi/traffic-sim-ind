@@ -20,10 +20,13 @@ export function addUIEventHandlers() {
     const sliderValue2 = document.getElementById('trafficSliderValue');
     var vehiclesPerHourToMillis = Math.floor((60 * 60) / slider2.value * 1000);
     GlobalMemberStore.putMember({ id: "vehiclesPerHourInMillis", value: vehiclesPerHourToMillis });
+    GlobalMemberStore.putMember({ id: "vehiclesPerHour", value: slider2.value });
+
     slider2.addEventListener('input', function () {
         sliderValue2.textContent = slider2.value; // Display current value of the slider
         vehiclesPerHourToMillis = Math.floor((60 * 60) / slider2.value * 1000);
         GlobalMemberStore.updateMember({ id: "vehiclesPerHourInMillis", value: vehiclesPerHourToMillis });
+        GlobalMemberStore.updateMember({ id: "vehiclesPerHour", value: slider2.value });
     });
 
     // Adding event listener for lane checkbox and bus stop selection
@@ -83,5 +86,16 @@ export function addUIEventHandlers() {
             removeObstacle(obId);
         }
     });
-
 }
+
+export async function fetchAndRenderReadme() {
+    // Fetch the README.md file
+    const response = await fetch('README.md');
+    const markdown = await response.text();
+    // Convert markdown to HTML using Showdown
+    const converter = new showdown.Converter();
+    const htmlContent = converter.makeHtml(markdown);
+    // Insert the HTML into the page
+    document.getElementById('readme-content').innerHTML = htmlContent;
+}
+

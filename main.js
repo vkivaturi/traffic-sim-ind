@@ -2,9 +2,11 @@ import { createPath } from "/src/creator/path.js";
 import { updatePathPointVehicles } from "/src/preserver/orchestrator.js";
 import { config } from "/src/config.js";
 import { createRoad } from "/src/creator/road.js";
-import { addUIEventHandlers } from "/src/creator/eventhandlers.js";
-import { GlobalMemberStore } from "/src/data/system.js";
+import { addUIEventHandlers, fetchAndRenderReadme } from "/src/creator/eventhandlers.js";
+import { GlobalMemberStore, Queue } from "/src/data/system.js";
 import { Analytics } from "./src/creator/analytics";
+import {generateTraffic} from "./src/creator/traffic.js";
+
 
 function initialise() {
     let ctx = document.getElementById("canvas").getContext("2d");
@@ -33,11 +35,17 @@ function initialise() {
 
     //Add simulation time to global store
     addUIEventHandlers();
+    fetchAndRenderReadme();
+
+    //Initialise new vehicle queue
+    GlobalMemberStore.putMember({ id: "newVehicleQueue", value: new Queue() });
 
     //Start simulation button click event capture
     startSimulationBtn.addEventListener('click', function () {
         GlobalMemberStore.updateMember({ id: "simStartTimeMillis", value: Date.now() });
-        GlobalMemberStore.updateMember({ id: "isSimulationActive", value: true });  
+        GlobalMemberStore.updateMember({ id: "isSimulationActive", value: true }); 
+        //Generate traffic in async mode
+        generateTraffic();
         simulate();
     });
     //Stop simulation button click event capture

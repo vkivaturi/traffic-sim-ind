@@ -1,38 +1,32 @@
-import {addNewVehicleToPath} from "../creator/path.js";
-import {moveUpIfPossible} from "./movement.js";
+import { addNewVehicleToPath } from "../creator/path.js";
+import { moveUpIfPossible } from "./movement.js";
 import { removeVehicleFromLane } from "../transformer/endofpath.js";
 import { GlobalMemberStore } from "../data/system.js";
 
-//let vehicleAddIntervalMillis = Math.floor(((60*60)/config.VehiclesPerHour) * 1000);
 let vehicleAddTime = 0;
 //Main function that updates path in every frame refresh
 export function updatePathPointVehicles(laneId, ctx) {
-    const vehicleAddIntervalMillis = GlobalMemberStore.getMember("vehiclesPerHourInMillis").member.value;
     var pathArr = GlobalMemberStore.getMember("laneArray").member.value[laneId];
 
     for (var i = pathArr.length - 1; i >= 0; i--) {
         if (pathArr[i].vehicle == null) {
             let currTime = Date.now();
+            let queue = GlobalMemberStore.getMember("newVehicleQueue").member.value;
             //If start point is null, add a vehicle to the path 
-            if (pathArr[i].position == "start" && isVehiclePerHourAllowed(currTime, vehicleAddIntervalMillis, vehicleAddTime)) {
+            if (pathArr[i].position == "start" && queue.size() > 0) {
                 addNewVehicleToPath(i, pathArr, ctx, laneId);
                 vehicleAddTime = currTime;
+                //Remove the vehilce from queue as it is now added to path
+                queue.dequeue();
             }
         } else {
             if ((pathArr[i].position == "start") || (pathArr[i].position == "interim")) {
                 var isMoveUp = moveUpIfPossible(i, pathArr);
-                //console.log("Is move up : " + isMoveUp);
             } else if (pathArr[i].position == "end") {
-                //Remove vehicle from end
+                //Remove vehicle from lane end
                 removeVehicleFromLane(pathArr, i);
-                GlobalMemberStore.updateMember({ id: "vehicleCounter", value: GlobalMemberStore.getMember("vehicleCounter").member.value + 1 });          
+                GlobalMemberStore.updateMember({ id: "vehicleCounter", value: GlobalMemberStore.getMember("vehicleCounter").member.value + 1 });
             }
         }
     }
-}
-
-//Check if it time to add new vehicle. This is based on the vehicles per hour configuration
-//that indicates traffic density
-function isVehiclePerHourAllowed(currTime, vehicleAddIntervalMillis, vehicleAddTime) {
-    return (currTime > (vehicleAddTime + vehicleAddIntervalMillis) ? true : false );
 }

@@ -39,4 +39,48 @@ export const GlobalMemberStore = (() => {
     }
   }
   return Object.freeze(Store)
-})()
+})();
+
+//Class to maintain a common queue of new vehicles to be added to the road.
+//This is used in adhering to the user selected vehicle per hour traffic density
+export class Queue {
+  constructor() {
+      this.items = [];
+  }
+
+  // Add an element to the queue
+  enqueue(element) {
+      this.items.push(element);
+  }
+
+  // Remove and return the first element from the queue
+  dequeue() {
+      if (this.isEmpty()) {
+          return "Queue is empty";
+      }
+      return this.items.shift();
+  }
+
+  // Check if the queue is empty
+  isEmpty() {
+      return this.items.length === 0;
+  }
+
+  // Get the first element of the queue without removing it
+  front() {
+      if (this.isEmpty()) {
+          return "Queue is empty";
+      }
+      return this.items[0];
+  }
+
+  // Get the size of the queue
+  size() {
+      return this.items.length;
+  }
+
+  // Print the elements of the queue
+  printQueue() {
+      console.log(this.items.join(', '));
+  }
+}
