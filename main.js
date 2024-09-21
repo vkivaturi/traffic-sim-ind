@@ -1,12 +1,11 @@
 import { createPath } from "/src/creator/path.js";
 import { updatePathPointVehicles } from "/src/preserver/orchestrator.js";
 import { config } from "/src/config.js";
-import { createRoad } from "/src/creator/road.js";
-import { addUIEventHandlers, fetchAndRenderReadme } from "/src/creator/eventhandlers.js";
+import { createRoad, clearVehiclesOnRoad } from "/src/creator/road.js";
+import { addUIEventHandlers, fetchAndRenderReadme, disableAllElementsState, disableButtonState } from "/src/creator/eventhandlers.js";
 import { GlobalMemberStore, Queue } from "/src/data/system.js";
 import { Analytics } from "./src/creator/analytics";
-import {generateTraffic} from "./src/creator/traffic.js";
-
+import { generateTraffic } from "./src/creator/traffic.js";
 
 function initialise() {
     let ctx = document.getElementById("canvas").getContext("2d");
@@ -43,16 +42,30 @@ function initialise() {
     //Start simulation button click event capture
     startSimulationBtn.addEventListener('click', function () {
         GlobalMemberStore.updateMember({ id: "simStartTimeMillis", value: Date.now() });
-        GlobalMemberStore.updateMember({ id: "isSimulationActive", value: true }); 
+        GlobalMemberStore.updateMember({ id: "isSimulationActive", value: true });
+        GlobalMemberStore.updateMember({ id: "vehicleCounter", value: 0 });
+
         //Generate traffic in async mode
         generateTraffic();
+
+        //Disable UI elements while a simulation is running
+        disableAllElementsState(true);
+        disableButtonState("startSimulationBtn", true);
+        disableButtonState("stopSimulationBtn", false);
+
+        //Clear any existing vehicles from previous simulations
+        clearVehiclesOnRoad();
+        //createRoad(ctx);
+
+        Analytics.resetAnalytics();
+
         simulate();
     });
     //Stop simulation button click event capture
     stopSimulationBtn.addEventListener('click', function () {
         //Break the loop in Simulate function
         GlobalMemberStore.updateMember({ id: "simStartTimeMillis", value: 0 });
-        GlobalMemberStore.updateMember({ id: "isSimulationActive", value: false });  
+        GlobalMemberStore.updateMember({ id: "isSimulationActive", value: false });
     });
 
     createRoad(ctx);
@@ -88,8 +101,14 @@ function simulate() {
 
     if (Date.now() > (simStartTimeMillis + GlobalMemberStore.getMember("simRunTimeSecs").member.value * 1000)) {
         //Simulation run time is reached. Exit simulation
-        updateProgressBar(progressBar, 100);    
+        updateProgressBar(progressBar, 100);
         GlobalMemberStore.updateMember({ id: "isSimulationActive", value: false });
+
+        //Enable UI elements when a simulation stops
+        disableAllElementsState(false);
+        disableButtonState("startSimulationBtn", false);
+        disableButtonState("stopSimulationBtn", true);
+
         return;
     }
 

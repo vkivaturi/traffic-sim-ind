@@ -1,0 +1,41 @@
+/* Simple styling for content areas */
+.content-area {
+    display: none;
+}
+
+.content-area.active {
+    display: block;
+}
+
+.content {
+    margin-top: 2px;
+    margin-left: 2px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    /* Space between columns */
+}
+
+.grid-item {
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* 4 columns */
+    grid-template-rows: repeat(3, auto);
+    /* 3 rows for checkboxes */
+    gap: 15px;
+    /* Gap between columns and rows */
+}
+
+.checkbox-grid label {
+    display: flex;
+    align-items: center;
+}

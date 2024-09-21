@@ -45,13 +45,20 @@ export const Analytics = {
     updateAnalytics: function () {
         //Calculate the new time lapse for this data point. Graph is at seconds on time axes.
         //Hence push a new data point only if the second changes. Not for every few milliseconds updates 
-        let newTimeLapseSecs = Math.floor((Date.now() - GlobalMemberStore.getMember("simStartTimeMillis").member.value)/1000);
+        let newTimeLapseSecs = Math.floor((Date.now() - GlobalMemberStore.getMember("simStartTimeMillis").member.value) / 1000);
         if (newTimeLapseSecs != timeLapseSecs) {
             vehicleChart.data.labels.push(timeLapseSecs);
             vehicleChart.data.datasets[0].data.push(GlobalMemberStore.getMember("vehicleCounter").member.value);
             vehicleChart.update();
             timeLapseSecs = newTimeLapseSecs;
         }
+    },
+    resetAnalytics: function () {
+        //Reset all data in the graph
+        vehicleChart.data.labels = [];
+        vehicleChart.data.datasets[0].data = [];
+        vehicleChart.update();
+        timeLapseSecs = 0;
     }
 };
 

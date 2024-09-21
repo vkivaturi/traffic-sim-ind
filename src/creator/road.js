@@ -1,6 +1,6 @@
 import { GlobalMemberStore } from "/src/data/system.js";
-import { config } from "../config";
 import { Obstacle } from "/src/creator/obstacle.js";
+import { removeVehicleFromLane } from "../transformer/endofpath.js";
 
 //Create road with desired properties
 export function createRoad(ctx) {
@@ -50,4 +50,15 @@ export function removeObstacle(obId) {
     //Clear the image 
     ctx.fillStyle = "black";
     ctx.fillRect(obstacle.x, obstacle.y - 25, 50, 50);
+}
+
+//Clear all vehicles from the road
+export function clearVehiclesOnRoad() {
+    let tempLaneArr = GlobalMemberStore.getMember("laneArray").member.value;
+    tempLaneArr.forEach(pathArr => {
+        for (var i=0; i<pathArr.length; i++) {
+            removeVehicleFromLane(pathArr, i);
+        }
+    });
+
 }

@@ -8,50 +8,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-
-    <style>
-        /* Simple styling for content areas */
-        .content-area {
-            display: none;
-        }
-
-        .content-area.active {
-            display: block;
-        }
-
-        .content {
-            margin-top: 2px;
-            margin-left: 2px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-rows: 1fr 1fr;
-            gap: 20px;
-            /* Space between columns */
-        }
-
-        .grid-item {
-            padding: 20px;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-        }
-
-        .checkbox-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            /* 4 columns */
-            grid-template-rows: repeat(3, auto);
-            /* 3 rows for checkboxes */
-            gap: 15px;
-            /* Gap between columns and rows */
-        }
-
-        .checkbox-grid label {
-            display: flex;
-            align-items: center;
-        }
-    </style>
+    <link rel="stylesheet" href="main.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="main.js" type="module"></script>
@@ -62,7 +19,7 @@
 
 <body>
     <div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-danger" data-bs-theme="dark">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
@@ -87,7 +44,7 @@
                         <div class="checkbox-grid">
 
                             <label>Duration of the simulation</label>
-                            <label><input type="range" min="1" max="20" value="1" id="simulationSlider"> <span
+                            <label><input type="range" min="1" max="10" value="1" id="simulationSlider"> <span
                                     id="simulationSliderValue">1</span>&nbsp;minutes</label>
                             <label>Traffic density (vehicles per hour)</label>
                             <label><input type="range" min="500" max="40000" value="10000" step="500"
@@ -110,8 +67,6 @@
                                     class="bi bi-file-play ms-2"></i></button>
                             <span><button id="stopSimulationBtn" class="btn btn-danger me-2">Stop simulation <i
                                         class="bi bi-stop-circle-fill ms-2"></i></button>
-                                <button class="btn btn-info">Reset values<i
-                                        class="bi bi-arrow-bar-left ms-2"></i></button>
                             </span>
                         </div>
                     </div>

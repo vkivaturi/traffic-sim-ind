@@ -99,3 +99,18 @@ export async function fetchAndRenderReadme() {
     document.getElementById('readme-content').innerHTML = htmlContent;
 }
 
+export function disableAllElementsState(elementState) {
+    // Disable all checkboxes
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => checkbox.disabled = elementState);
+
+    // Disable all sliders
+    const selects = document.querySelectorAll('input[type="range"]');
+    selects.forEach(select => select.disabled = elementState);
+}
+
+export function disableButtonState(btnId, elementState) {
+    // Disable selected button
+    const buttons = document.querySelectorAll('button[id=\"' + btnId + '\"]');
+    buttons.forEach(button => button.disabled = elementState);
+}
