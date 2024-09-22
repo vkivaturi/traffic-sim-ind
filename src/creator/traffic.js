@@ -5,7 +5,7 @@ import { config } from "../config.js";
 export async function generateTraffic() {
     var vehicleId = 0;
     var simRunTimeMillis = GlobalMemberStore.getMember("simRunTimeSecs").member.value * 1000;
-    var millisPerNewVehicle = Math.floor(3600000/(GlobalMemberStore.getMember("vehiclesPerHour").member.value));
+    var millisPerNewVehicle = Math.floor(3600000 / (GlobalMemberStore.getMember("vehiclesPerHour").member.value));
     const intervalId = setInterval(() => {
         let queue = GlobalMemberStore.getMember("newVehicleQueue").member.value;
         queue.enqueue(vehicleId++);
@@ -21,8 +21,19 @@ export async function generateTraffic() {
 
 //Traffic signal is managed asynchronously. It will activate at a given time and deactivate after a specific period
 export async function manageTrafficSignal() {
+    signalOnOff();
 
-    //Traffic signal turns red after a specific period from simulation start    
+    //Repeat the cycle    
+    let intervalCycle = setInterval(() => {
+        signalOnOff();
+    }, 20000);
+
+    setTimeout(() => {
+        clearInterval(intervalCycle);
+    }, GlobalMemberStore.getMember("simRunTimeSecs").member.value * 1000);
+}
+
+function signalOnOff() {
     setTimeout(() => {
         let tempLaneArr = GlobalMemberStore.getMember("laneArray").member.value;
         tempLaneArr[0][20].obstacleType = config.ObstacleType.TRAFFIC_LIGHTS;
@@ -31,7 +42,7 @@ export async function manageTrafficSignal() {
 
         config.ObstacleType.TRAFFIC_LIGHTS.timeout = Number.MAX_VALUE;
         config.ObstacleType.TRAFFIC_LIGHTS.image = "/images/traffic-light-on.png";
-   }, 5000);
+    }, 2000);
 
     //Traffic signal turns green after a specific period from turning red
     setTimeout(() => {
@@ -44,3 +55,4 @@ export async function manageTrafficSignal() {
         config.ObstacleType.TRAFFIC_LIGHTS.image = "/images/traffic-light-off.png";
     }, 15000);
 }
+
