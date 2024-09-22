@@ -9,10 +9,11 @@ export const config = {
     }),
     FramesPerSecond : 5,
     NumLanes : 3,
-    NumPathPoints : 40,
+    NumPathPoints : 30,
     ObstacleType : Object.freeze({
         POT_HOLE : {image: "/images/pothole.png", timeout: 1000},
         BUS_STOP : {image: "/images/bus-stop.png", timeout: 5000},
-        CAR_BREAK : {image: "/images/car_break.png", timeout: 5000}
+        CAR_BREAK : {image: "/images/car-break.png", timeout: 5000},
+        TRAFFIC_LIGHTS : {image: "/images/traffic-light-off.png", timeout: 0}
     })
 }

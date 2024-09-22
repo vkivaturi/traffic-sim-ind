@@ -5,7 +5,7 @@ import { createRoad, clearVehiclesOnRoad } from "/src/creator/road.js";
 import { addUIEventHandlers, fetchAndRenderReadme, disableAllElementsState, disableButtonState } from "/src/creator/eventhandlers.js";
 import { GlobalMemberStore, Queue } from "/src/data/system.js";
 import { Analytics } from "./src/creator/analytics";
-import { generateTraffic } from "./src/creator/traffic.js";
+import { generateTraffic, manageTrafficSignal } from "./src/creator/traffic.js";
 
 function initialise() {
     let ctx = document.getElementById("canvas").getContext("2d");
@@ -14,6 +14,7 @@ function initialise() {
     //Initialise
     GlobalMemberStore.putMember({ id: "simStartTimeMillis", value: Date.now() });
     GlobalMemberStore.putMember({ id: "isSimulationActive", value: false });
+    GlobalMemberStore.putMember({ id: "isTrafficSignalEnabled", value: false });
 
     GlobalMemberStore.putMember({ id: "vehicleCounter", value: 0 });
 
@@ -25,16 +26,20 @@ function initialise() {
     }
 
     //Pothole locations in the lane path array are predefined
-    let potholePathPoints = [[0, 20], [1, 15], [2, 20]];
+    let potholePathPoints = [[0, 10], [1, 15], [2, 10]];
     GlobalMemberStore.putMember({ id: "potholePathPoints", value: potholePathPoints });
 
     //Bus stop location in the lane path array are predefined
-    let busStopPathPoints = [[0, 25]];
+    let busStopPathPoints = [[0, 5]];
     GlobalMemberStore.putMember({ id: "busStopPathPoints", value: busStopPathPoints });
 
-    //Bus stop location in the lane path array are predefined
-    let carBreakPathPoints = [[0, 30]];
+    //Car breakdown stop location in the lane path array are predefined
+    let carBreakPathPoints = [[0, 25]];
     GlobalMemberStore.putMember({ id: "carBreakPathPoints", value: carBreakPathPoints });
+
+    //Car breakdown stop location in the lane path array are predefined
+    let trafficLightsPathPoints = [[0, 20], [1, 20], [2, 20]];
+    GlobalMemberStore.putMember({ id: "trafficLightsPathPoints", value: trafficLightsPathPoints });
 
     //Add simulation time to global store
     addUIEventHandlers();
@@ -51,6 +56,10 @@ function initialise() {
 
         //Generate traffic in async mode
         generateTraffic();
+
+        //Manage traffic signal
+        if (GlobalMemberStore.getMember("isTrafficSignalEnabled").member.value == true)
+            manageTrafficSignal();
 
         //Disable UI elements while a simulation is running
         disableAllElementsState(true);
@@ -167,6 +176,7 @@ function updateProgressBar(progressBar, value) {
     progressBar.textContent = newValue + '%';
 }
 
+//Add all obstacles to UI. But they are activated only if obstacleType is set
 function addAllObstacles() {
     let potholePathPointsArr = GlobalMemberStore.getMember("potholePathPoints").member.value;
     let ctx = GlobalMemberStore.getMember("ctx").member.value;
@@ -199,6 +209,20 @@ function addAllObstacles() {
 
     let carBreakPathPointsArr = GlobalMemberStore.getMember("carBreakPathPoints").member.value;
     carBreakPathPointsArr.forEach(function (valueLanePathPoint) {
+        let [laneId, pathPointId] = valueLanePathPoint;
+        let obstaclePathPoint = GlobalMemberStore.getMember("laneArray").member.value[laneId][pathPointId];
+        if (obstaclePathPoint.obstacleType !== undefined) {
+            //Add image at that point
+            const img = new Image();
+            img.addEventListener("load", () => {
+                ctx.drawImage(img, obstaclePathPoint.x, obstaclePathPoint.y - 25, 50, 50);
+            });
+            img.src = obstaclePathPoint.obstacleType.image;
+        }
+    });
+
+    let trafficLightsPathPointsArr = GlobalMemberStore.getMember("trafficLightsPathPoints").member.value;
+    trafficLightsPathPointsArr.forEach(function (valueLanePathPoint) {
         let [laneId, pathPointId] = valueLanePathPoint;
         let obstaclePathPoint = GlobalMemberStore.getMember("laneArray").member.value[laneId][pathPointId];
         if (obstaclePathPoint.obstacleType !== undefined) {

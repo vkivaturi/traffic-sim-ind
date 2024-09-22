@@ -8,10 +8,10 @@ export function addUIEventHandlers() {
     //Process the simulation time slider value
     const slider1 = document.getElementById('simulationSlider');
     const sliderValue1 = document.getElementById('simulationSliderValue');
-    GlobalMemberStore.putMember({ id: "simRunTimeSecs", value: (slider1.value)*60 });
+    GlobalMemberStore.putMember({ id: "simRunTimeSecs", value: (slider1.value) * 60 });
     slider1.addEventListener('input', function () {
         sliderValue1.textContent = slider1.value; // Display current value of the slider
-        GlobalMemberStore.updateMember({ id: "simRunTimeSecs", value: (slider1.value)*60 });
+        GlobalMemberStore.updateMember({ id: "simRunTimeSecs", value: (slider1.value) * 60 });
         console.log(GlobalMemberStore.getMember("simRunTimeSecs").member.value);
     });
 
@@ -35,6 +35,7 @@ export function addUIEventHandlers() {
     const checkLane3 = document.getElementById('potholeLane3');
     const busStop = document.getElementById('busStop');
     const carBreak = document.getElementById('carBreak');
+    const trafficLights = document.getElementById('trafficLights');
 
     checkLane1.addEventListener('click', function () {
         let obId = "obstacle1";
@@ -99,6 +100,30 @@ export function addUIEventHandlers() {
             removeObstacle(obId);
         }
     });
+
+    trafficLights.addEventListener('click', function () {
+        GlobalMemberStore.updateMember({ id: "isTrafficSignalEnabled", value: true });
+
+        let obId = "trafficLights";
+        if (this.checked) {
+            var lightsIdx = GlobalMemberStore.getMember("trafficLightsPathPoints").member.value.length;
+            let obType = config.ObstacleType.TRAFFIC_LIGHTS;
+            //Create traffic lights and attach to path points
+            for (var i = 0; i < lightsIdx; i++) {
+                let [laneId, pathPointId] = GlobalMemberStore.getMember("trafficLightsPathPoints").member.value[i];
+                createObstacle(obId + i, obType, laneId, pathPointId);
+            }
+        } else {
+            GlobalMemberStore.updateMember({ id: "isTrafficSignalEnabled", value: false });
+            //Remove the obstacle
+            let obId = "trafficLights";
+            var lightsIdx = GlobalMemberStore.getMember("trafficLightsPathPoints").member.value.length;
+            for (var i = 0; i < lightsIdx; i++) {
+                removeObstacle(obId + i);
+            }
+        }
+    });
+
 }
 
 export async function fetchAndRenderReadme() {

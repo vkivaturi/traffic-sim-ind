@@ -20,7 +20,7 @@ export function moveUpIfPossible(pIdx, pathArr) {
         if (pIdx >= 0 && pIdx < pathArr.length) {
             //Check next point in current lane
             var nextIdx = pIdx + 1;
-            if (pathArr[nextIdx].vehicle == null && pathArr[nextIdx].obstacleType != config.ObstacleType.CAR_BREAK ) {
+            if (pathArr[nextIdx].vehicle == null && pathArr[nextIdx].obstacleType != config.ObstacleType.CAR_BREAK) {
                 //Next slot is free in same lane. Move up
                 pathArr[nextIdx].vehicle = pathArr[pIdx].vehicle;
                 pathArr[nextIdx].vehicle.x = pathArr[nextIdx].x;
@@ -78,6 +78,11 @@ function checkObstacles(pathPoint, currentTimeMillis) {
         case config.ObstacleType.POT_HOLE:
             if (pathPoint.vehicle.obstacleTimeout == 0) {
                 pathPoint.vehicle.obstacleTimeout = currentTimeMillis + config.ObstacleType.POT_HOLE.timeout;
+            }
+            break;
+        case config.ObstacleType.TRAFFIC_LIGHTS:
+            if (pathPoint.vehicle.obstacleTimeout == 0) {
+                pathPoint.vehicle.obstacleTimeout = currentTimeMillis + config.ObstacleType.TRAFFIC_LIGHTS.timeout;
             }
             break;
         case config.ObstacleType.CAR_BREAK:
