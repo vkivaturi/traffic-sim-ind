@@ -34,6 +34,7 @@ export function addUIEventHandlers() {
     const checkLane2 = document.getElementById('potholeLane2');
     const checkLane3 = document.getElementById('potholeLane3');
     const busStop = document.getElementById('busStop');
+    const carBreak = document.getElementById('carBreak');
 
     checkLane1.addEventListener('click', function () {
         let obId = "obstacle1";
@@ -77,9 +78,21 @@ export function addUIEventHandlers() {
         let obId = "busStop";
         if (this.checked) {
             //Create bus stop and attach to path points
-            //TODO - Assuming only 1 bus stop
             let [laneId, pathPointId] = GlobalMemberStore.getMember("busStopPathPoints").member.value[0];
             let obType = config.ObstacleType.BUS_STOP;
+            createObstacle(obId, obType, laneId, pathPointId);
+        } else {
+            //Remove the obstacle
+            removeObstacle(obId);
+        }
+    });
+
+    carBreak.addEventListener('click', function () {
+        let obId = "carBreak";
+        if (this.checked) {
+            //Create bus stop and attach to path points
+            let [laneId, pathPointId] = GlobalMemberStore.getMember("carBreakPathPoints").member.value[0];
+            let obType = config.ObstacleType.CAR_BREAK;
             createObstacle(obId, obType, laneId, pathPointId);
         } else {
             //Remove the obstacle

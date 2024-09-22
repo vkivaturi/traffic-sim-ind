@@ -20,7 +20,7 @@ export function moveUpIfPossible(pIdx, pathArr) {
         if (pIdx >= 0 && pIdx < pathArr.length) {
             //Check next point in current lane
             var nextIdx = pIdx + 1;
-            if (pathArr[nextIdx].vehicle == null) {
+            if (pathArr[nextIdx].vehicle == null && pathArr[nextIdx].obstacleType != config.ObstacleType.CAR_BREAK ) {
                 //Next slot is free in same lane. Move up
                 pathArr[nextIdx].vehicle = pathArr[pIdx].vehicle;
                 pathArr[nextIdx].vehicle.x = pathArr[nextIdx].x;
@@ -31,34 +31,7 @@ export function moveUpIfPossible(pIdx, pathArr) {
                 isMoved = true;
             } else {
                 //Check next point in an adjacent lane - overtaking use case
-                //Fetch the adjacent lane id
-                var nextLaneId = pathArr[nextIdx].vehicle.laneId + 1;
-
-                var laneArr = GlobalMemberStore.getMember("laneArray").member.value;
-
-                //Check only right side lane availability for overtaking 
-                if (nextLaneId >= laneArr.length) {
-                    pathArr[nextIdx].vehicle.draw();
-                    return;
-                }
-                //Perform availablity check on the point in new lane
-                var nextLanePathArr = laneArr[nextLaneId];
-                if (nextLanePathArr[pIdx].vehicle == null) {
-                    //console.log("Next slot in other lane is free");
-
-                    nextLanePathArr[pIdx].vehicle = pathArr[pIdx].vehicle;
-                    nextLanePathArr[pIdx].vehicle.x = nextLanePathArr[pIdx].x;
-                    nextLanePathArr[pIdx].vehicle.y = nextLanePathArr[pIdx].y;
-                    nextLanePathArr[pIdx].vehicle.draw();
-
-                    pathArr[pIdx].vehicle = null;
-                    isMoved = true;
-                } else {
-                    //Next slot is already taken by another vehicle. Stay in current point
-                    //                  console.log("Next slot in same lane and other lane is busy");
-                    pathArr[nextIdx].vehicle.draw();
-                    isMoved = false;
-                }
+                isMoved = checkRightLaneAndMove(pathArr, pIdx, isMoved);
             }
         }
     }
@@ -72,23 +45,44 @@ export function moveUpIfPossible(pIdx, pathArr) {
 }
 
 
+function checkRightLaneAndMove(pathArr, pIdx, isMoved) {
+    var nextLaneId = pathArr[pIdx].vehicle.laneId + 1;
+    var laneArr = GlobalMemberStore.getMember("laneArray").member.value;
+    //Check only right side lane availability for overtaking. If no more right lane exists, stay in same lane and wait 
+    if (nextLaneId < laneArr.length) {
+        var nextLanePathArr = laneArr[nextLaneId];
+        if (nextLanePathArr[pIdx].vehicle == null) {
+            nextLanePathArr[pIdx].vehicle = pathArr[pIdx].vehicle;
+            nextLanePathArr[pIdx].vehicle.x = nextLanePathArr[pIdx].x;
+            nextLanePathArr[pIdx].vehicle.y = nextLanePathArr[pIdx].y;
+            nextLanePathArr[pIdx].vehicle.draw();
+
+            pathArr[pIdx].vehicle = null;
+            isMoved = true;
+        }
+    }
+    return isMoved;
+}
+
 function checkObstacles(pathPoint, currentTimeMillis) {
     //Check for obstacles and take appropriate decision
     switch (pathPoint.obstacleType) {
         case config.ObstacleType.BUS_STOP:
             //console.log("Bus stop found for " + pathPoint.vehicle.name);
             if (pathPoint.vehicle.name == 'Bus') {
-                console.log("Bus found");
                 if (pathPoint.vehicle.obstacleTimeout == 0) {
                     pathPoint.vehicle.obstacleTimeout = currentTimeMillis + config.ObstacleType.BUS_STOP.timeout;
                 }
             }
             break;
         case config.ObstacleType.POT_HOLE:
-            //console.log("Pot hole found for " + pathPoint.vehicle.name);
             if (pathPoint.vehicle.obstacleTimeout == 0) {
                 pathPoint.vehicle.obstacleTimeout = currentTimeMillis + config.ObstacleType.POT_HOLE.timeout;
             }
+            break;
+        case config.ObstacleType.CAR_BREAK:
+            //Car break use case is handled differently since no other vehicle can simply go over it (like pot hole / bus stop)
+            pathPoint.vehicle.obstacleTimeout = 0;
             break;
         default:
             break;

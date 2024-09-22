@@ -32,6 +32,10 @@ function initialise() {
     let busStopPathPoints = [[0, 25]];
     GlobalMemberStore.putMember({ id: "busStopPathPoints", value: busStopPathPoints });
 
+    //Bus stop location in the lane path array are predefined
+    let carBreakPathPoints = [[0, 30]];
+    GlobalMemberStore.putMember({ id: "carBreakPathPoints", value: carBreakPathPoints });
+
     //Add simulation time to global store
     addUIEventHandlers();
     fetchAndRenderReadme();
@@ -176,12 +180,25 @@ function addAllObstacles() {
                 ctx.drawImage(img, obstaclePathPoint.x, obstaclePathPoint.y - 25, 50, 50);
             });
             img.src = obstaclePathPoint.obstacleType.image;
-            console.log(`Added obstacle ${obstaclePathPoint.obstacleType} to ${laneId}`)
         }
     });
 
     let busStopPathPointsArr = GlobalMemberStore.getMember("busStopPathPoints").member.value;
     busStopPathPointsArr.forEach(function (valueLanePathPoint) {
+        let [laneId, pathPointId] = valueLanePathPoint;
+        let obstaclePathPoint = GlobalMemberStore.getMember("laneArray").member.value[laneId][pathPointId];
+        if (obstaclePathPoint.obstacleType !== undefined) {
+            //Add image at that point
+            const img = new Image();
+            img.addEventListener("load", () => {
+                ctx.drawImage(img, obstaclePathPoint.x, obstaclePathPoint.y - 25, 50, 50);
+            });
+            img.src = obstaclePathPoint.obstacleType.image;
+        }
+    });
+
+    let carBreakPathPointsArr = GlobalMemberStore.getMember("carBreakPathPoints").member.value;
+    carBreakPathPointsArr.forEach(function (valueLanePathPoint) {
         let [laneId, pathPointId] = valueLanePathPoint;
         let obstaclePathPoint = GlobalMemberStore.getMember("laneArray").member.value[laneId][pathPointId];
         if (obstaclePathPoint.obstacleType !== undefined) {

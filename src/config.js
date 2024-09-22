@@ -13,6 +13,6 @@ export const config = {
     ObstacleType : Object.freeze({
         POT_HOLE : {image: "/images/pothole.png", timeout: 1000},
         BUS_STOP : {image: "/images/bus-stop.png", timeout: 5000},
-        PEDESTRIAN_CROSSING : {image: "/images/pederstrian.png", speed: 0, timeout: 1000}
+        CAR_BREAK : {image: "/images/car_break.png", timeout: 5000}
     })
 }
