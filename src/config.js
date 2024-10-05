@@ -1,13 +1,12 @@
 //Config data used by different parts of the application
 
 export const config = {
-    //Vehicle speed indicates number of slots a vehicle will travel in each frame
+    //Vehicle speed indicates amount of time a vehicle will wait before moving to next slot
     VehicleSpeed : Object.freeze({
         NORMAL: 1,
-        SLOW: 1,
-        STOP: 0
+        SLOW: 1
     }),
-    FramesPerSecond : 5,
+    FramesPerSecond : 8,
     NumLanes : 3,
     NumPathPoints : 30,
     ObstacleType : Object.freeze({

@@ -23,7 +23,7 @@ export default function createVehicle(ctx, _x, _y, _laneId) {
         draw() {
             const img = new Image();
             img.addEventListener("load", () => {
-                ctx.drawImage(img, this.x, this.y-25, 48, 48);
+                ctx.drawImage(img, this.x, this.y-25, 40, 45);
             });
             img.src = selectVehicle.image;      
         }
