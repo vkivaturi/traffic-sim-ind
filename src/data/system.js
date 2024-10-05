@@ -36,7 +36,8 @@ export const GlobalMemberStore = (() => {
       }
       _members = _members.map(m => m.id === u.id ? 
                               {...update} : m)
-    }
+    },
+    clearStore: () => _members = [],
   }
   return Object.freeze(Store)
 })();

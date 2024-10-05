@@ -8,6 +8,7 @@ import { Analytics } from "./src/creator/analytics";
 import { generateTraffic, manageTrafficSignal } from "./src/creator/traffic.js";
 
 function initialise() {
+    //GlobalMemberStore.clearStore();
     let ctx = document.getElementById("canvas").getContext("2d");
     GlobalMemberStore.putMember({ id: "ctx", value: ctx });
 
@@ -34,7 +35,7 @@ function initialise() {
     GlobalMemberStore.putMember({ id: "busStopPathPoints", value: busStopPathPoints });
 
     //Car breakdown stop location in the lane path array are predefined
-    let carBreakPathPoints = [[0, 25]];
+    let carBreakPathPoints = [[0, 22]];
     GlobalMemberStore.putMember({ id: "carBreakPathPoints", value: carBreakPathPoints });
 
     //Car breakdown stop location in the lane path array are predefined
@@ -116,7 +117,6 @@ function simulate() {
         //Simulation run time is reached. Exit simulation
         updateProgressBar(progressBar, 100);
         GlobalMemberStore.updateMember({ id: "isSimulationActive", value: false });
-
         //Enable UI elements when a simulation stops
         disableAllElementsState(false);
         disableButtonState("startSimulationBtn", false);
