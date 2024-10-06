@@ -128,7 +128,7 @@ export function addUIEventHandlers() {
 
 export async function fetchAndRenderReadme() {
     // Fetch the README.md file
-    const response = await fetch('README.md');
+    const response = await fetch('/README.md');
     const markdown = await response.text();
     // Convert markdown to HTML using Showdown
     const converter = new showdown.Converter();
