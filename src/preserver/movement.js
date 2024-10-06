@@ -37,13 +37,17 @@ export function moveUpIfPossible(pIdx, pathArr) {
     }
     if (isMoved) {
         //Clear the image from previous location
-        let ctx = GlobalMemberStore.getMember("ctx").member.value;
-        ctx.fillStyle = "black";
-        ctx.fillRect(pathArr[pIdx].x, pathArr[pIdx].y - 25, 48, 48);
+        clearImageFromPath(pathArr, pIdx);
     }
     return isMoved;
 }
 
+
+function clearImageFromPath(pathArr, pIdx) {
+    let ctx = GlobalMemberStore.getMember("ctx").member.value;
+    ctx.fillStyle = "black";
+    ctx.fillRect(pathArr[pIdx].x, pathArr[pIdx].y - 25, 48, 48);
+}
 
 function checkRightLaneAndMove(pathArr, pIdx, isMoved) {
     var nextLaneId = pathArr[pIdx].vehicle.laneId + 1;

@@ -6,17 +6,17 @@ export async function generateTraffic() {
     var vehicleId = 0;
     var simRunTimeMillis = GlobalMemberStore.getMember("simRunTimeSecs").member.value * 1000;
     var millisPerNewVehicle = Math.floor(3600000 / (GlobalMemberStore.getMember("vehiclesPerHour").member.value));
+
     const intervalId = setInterval(() => {
         let queue = GlobalMemberStore.getMember("newVehicleQueue").member.value;
         queue.enqueue(vehicleId++);
-    }, millisPerNewVehicle);
 
-    // Stop after simulation time limit is reached
-    setTimeout(() => {
-        clearInterval(intervalId);
-        let queue = GlobalMemberStore.getMember("newVehicleQueue").member.value;
-        console.log(`Simulation ended queue size ${queue.size()}`);
-    }, simRunTimeMillis);
+        //Stop adding vehicles to the queue in case an active simulation is terminated by user
+        if (GlobalMemberStore.getMember("isSimulationActive").member.value == false) {
+            clearInterval(intervalId);
+        }
+
+    }, millisPerNewVehicle);
 }
 
 //Traffic signal is managed asynchronously. It will activate at a given time and deactivate after a specific period

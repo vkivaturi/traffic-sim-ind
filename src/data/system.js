@@ -67,6 +67,11 @@ export class Queue {
       return this.items.length === 0;
   }
 
+  // Clear queue contents
+  clearQueue() {
+    this.items = [];
+  }
+
   // Get the first element of the queue without removing it
   front() {
       if (this.isEmpty()) {

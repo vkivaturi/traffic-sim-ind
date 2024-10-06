@@ -16,6 +16,8 @@ function initialise() {
     GlobalMemberStore.putMember({ id: "simStartTimeMillis", value: Date.now() });
     GlobalMemberStore.putMember({ id: "isSimulationActive", value: false });
     GlobalMemberStore.putMember({ id: "isTrafficSignalEnabled", value: false });
+    //Initialise new vehicle queue
+    GlobalMemberStore.putMember({ id: "newVehicleQueue", value: null });
 
     GlobalMemberStore.putMember({ id: "vehicleCounter", value: 0 });
 
@@ -46,15 +48,14 @@ function initialise() {
     addUIEventHandlers();
     fetchAndRenderReadme();
 
-    //Initialise new vehicle queue
-    GlobalMemberStore.putMember({ id: "newVehicleQueue", value: new Queue() });
-
     //Start simulation button click event capture
     startSimulationBtn.addEventListener('click', function () {
         GlobalMemberStore.updateMember({ id: "simStartTimeMillis", value: Date.now() });
         GlobalMemberStore.updateMember({ id: "isSimulationActive", value: true });
         GlobalMemberStore.updateMember({ id: "vehicleCounter", value: 0 });
 
+        //Recreate new vehicle queue
+        GlobalMemberStore.updateMember({ id: "newVehicleQueue", value: new Queue() });
         //Generate traffic in async mode
         generateTraffic();
 
@@ -69,7 +70,6 @@ function initialise() {
 
         //Clear any existing vehicles from previous simulations
         clearVehiclesOnRoad();
-        //createRoad(ctx);
 
         Analytics.resetAnalytics();
 
