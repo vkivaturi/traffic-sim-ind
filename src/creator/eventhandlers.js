@@ -38,40 +38,53 @@ export function addUIEventHandlers() {
     const trafficLights = document.getElementById('trafficLights');
 
     checkLane1.addEventListener('click', function () {
-        let obId = "obstacle1";
+        let obId11 = "obstacle11";
+        let obId12 = "obstacle12";
         if (this.checked) {
             //Create obstacles and attach to path points
             let [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[0];
-            //let pathPointId = 10
             let obType = config.ObstacleType.POT_HOLE;
-            createObstacle(obId, obType, laneId, pathPointId);
+            createObstacle(obId11, obType, laneId, pathPointId);
+
+            [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[3];
+            createObstacle(obId12, obType, laneId, pathPointId);
+
         } else {
             //Remove the obstacle
-            removeObstacle(obId);
+            removeObstacle(obId11);
+            removeObstacle(obId12);
         }
     });
     checkLane2.addEventListener('click', function () {
-        let obId = "obstacle2";
+        let obId21 = "obstacle21";
+        let obId22 = "obstacle22";
+
         if (this.checked) {
             //Create obstacles and attach to path points
             let [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[1];
             let obType = config.ObstacleType.POT_HOLE;
-            createObstacle(obId, obType, laneId, pathPointId);
+            createObstacle(obId21, obType, laneId, pathPointId);
+
+            [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[4];
+            createObstacle(obId22, obType, laneId, pathPointId);
+
         } else {
             //Remove the obstacle
-            removeObstacle(obId);
+            removeObstacle(obId21);
+            removeObstacle(obId22);
         }
     });
     checkLane3.addEventListener('click', function () {
-        let obId = "obstacle3";
+        let obId32 = "obstacle32";
+
         if (this.checked) {
             //Create obstacles and attach to path points
-            let [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[2];
+            let [laneId, pathPointId] = GlobalMemberStore.getMember("potholePathPoints").member.value[5];
             let obType = config.ObstacleType.POT_HOLE;
-            createObstacle(obId, obType, laneId, pathPointId);
+            createObstacle(obId32, obType, laneId, pathPointId);
         } else {
             //Remove the obstacle
-            removeObstacle(obId);
+            removeObstacle(obId32);
         }
     });
 

@@ -2,6 +2,9 @@ import { GlobalMemberStore } from "/src/data/system.js";
 
 let vehicleChart;
 let timeLapseSecs = 0;
+let idealTotal = 0;
+//let _vph = GlobalMemberStore.getMember("vehiclesPerHour").member.value;
+
 export const Analytics = {
     createAnalytics: function () {
         const ctx = document.getElementById('vehicleLineChart').getContext('2d');
@@ -10,10 +13,18 @@ export const Analytics = {
         const data = {
             labels: [],
             datasets: [{
-                label: 'Vehicles completing simulation over time',
+                label: 'Actual vehicle flow due to obstacles',
                 data: [],
                 borderColor: 'rgba(75, 192, 192, 1)', // Line color
                 backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color under the line
+                borderWidth: 2,
+                tension: 0.4 // Curve of the line
+            },
+            {
+                label: 'Ideal vehicle flow',
+                data: [],
+                borderColor: 'rgba(192, 192, 192, 1)', // Line color
+                backgroundColor: 'rgba(192, 192, 192, 0.2)', // Fill color under the line
                 borderWidth: 2,
                 tension: 0.4 // Curve of the line
             }]
@@ -49,6 +60,12 @@ export const Analytics = {
         if (newTimeLapseSecs != timeLapseSecs) {
             vehicleChart.data.labels.push(timeLapseSecs);
             vehicleChart.data.datasets[0].data.push(GlobalMemberStore.getMember("vehicleCounter").member.value);
+
+            //This temp is calculated based on a factor that indicates number of vehicles to complete the journey in ideal conditions
+            let _temp = GlobalMemberStore.getMember("vehiclesPerHour").member.value * 0.26/1000;
+            idealTotal += _temp;
+            vehicleChart.data.datasets[1].data.push(idealTotal);
+            
             vehicleChart.update();
             timeLapseSecs = newTimeLapseSecs;
         }
@@ -57,8 +74,10 @@ export const Analytics = {
         //Reset all data in the graph
         vehicleChart.data.labels = [];
         vehicleChart.data.datasets[0].data = [];
+        vehicleChart.data.datasets[1].data = [];
         vehicleChart.update();
         timeLapseSecs = 0;
+        idealTotal = 0;
     }
 };
 

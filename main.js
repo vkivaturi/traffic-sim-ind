@@ -29,7 +29,7 @@ function initialise() {
     }
 
     //Pothole locations in the lane path array are predefined
-    let potholePathPoints = [[0, 10], [1, 15], [2, 10]];
+    let potholePathPoints = [[0, 10], [1, 10], [2, 10], [0, 25], [1, 25], [2, 25]];
     GlobalMemberStore.putMember({ id: "potholePathPoints", value: potholePathPoints });
 
     //Bus stop location in the lane path array are predefined
@@ -183,7 +183,7 @@ function addAllObstacles() {
     potholePathPointsArr.forEach(function (valueLanePathPoint) {
         let [laneId, pathPointId] = valueLanePathPoint;
         let obstaclePathPoint = GlobalMemberStore.getMember("laneArray").member.value[laneId][pathPointId];
-        if (obstaclePathPoint.obstacleType !== undefined) {
+        if (obstaclePathPoint.obstacleType !== undefined && obstaclePathPoint.obstacleType !== null) {
             //Add image at that point
             const img = new Image();
             img.addEventListener("load", () => {

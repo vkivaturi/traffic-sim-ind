@@ -18,7 +18,7 @@ export function createObstacle(obId, obType, laneId, pathPointId) {
     //let obstacle = GlobalMemberStore.getMember(obId).member.value;
     let ctx = GlobalMemberStore.getMember("ctx").member.value;
     let tempLaneArr = GlobalMemberStore.getMember("laneArray").member.value;
-    let obInstance = new Obstacle(tempLaneArr[laneId][pathPointId].x, tempLaneArr[laneId][[pathPointId]].y, obType);
+    let obInstance = new Obstacle(tempLaneArr[laneId][pathPointId].x, tempLaneArr[laneId][[pathPointId]].y, laneId, pathPointId, obType);
 
     //Check if alrady exists and decide on add or update
     if (GlobalMemberStore.getMember(obId).member === undefined) {
@@ -43,9 +43,8 @@ export function removeObstacle(obId) {
     let obstacle = GlobalMemberStore.getMember(obId).member.value;
     let ctx = GlobalMemberStore.getMember("ctx").member.value;
     let tempLaneArr = GlobalMemberStore.getMember("laneArray").member.value;
-
     //Remove obstacle from lane array
-    tempLaneArr[1][15].obstacleType = null;
+    tempLaneArr[obstacle.laneId][obstacle.pathPointId].obstacleType = null;
 
     //Clear the image 
     ctx.fillStyle = "black";
